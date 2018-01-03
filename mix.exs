@@ -20,7 +20,7 @@ defmodule Simple.Mixfile do
   def application do
     [
       mod: {Simple.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :timex]
     ]
   end
 
@@ -39,13 +39,17 @@ defmodule Simple.Mixfile do
       {:credo, "~> 0.8", only: [:dev, :test]}, # Code style suggestions
       {:corsica, "~> 1.1.0"},
       {:distillery, "~> 1.5", runtime: false},
+      {:ex_machina, "~> 2.1", only: :test}, # test factories
       {:ex_rated, "~> 1.2"},
+      {:guardian, "~> 1.0"}, # Authentication (JWT)
       {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:timex, "~> 3.0"},
+      {:timex_ecto, "~> 3.0"}
     ]
   end
 
