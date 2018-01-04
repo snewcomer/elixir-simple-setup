@@ -21,7 +21,7 @@ defmodule SimpleWeb.UserViewTest do
           "inserted-at" => user.inserted_at,
           "last-name" => user.last_name,
           # "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
-          # "photo-thumb-url" => "#{host}/icons/user_default_thumb_blue.png",
+          # "photo-thumb-url" => "#{host}/icons/user_default_thumb_light_blue.png",
           "username" => user.username,
           "updated-at" => user.updated_at
         },

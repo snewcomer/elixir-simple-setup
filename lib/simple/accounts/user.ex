@@ -1,6 +1,7 @@
 defmodule Simple.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  import Simple.Helpers.RandomIconColor
   alias Simple.Accounts.User
   alias Comeonin.Bcrypt
   alias Ecto.Changeset
@@ -9,6 +10,9 @@ defmodule Simple.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "users" do
+    field :admin, :boolean
+    field :cloudinary_public_id
+    field :default_color
     field :email, :string
     field :encrypted_password, :string
     field :first_name, :string
@@ -23,8 +27,14 @@ defmodule Simple.Accounts.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:username, :password, :email, :first_name, :last_name])
+    |> cast(attrs, [:cloudinary_public_id, :username, :password, :email, :first_name, :last_name])
     |> validate_required([:username, :email, :first_name, :last_name])
+  end
+
+  @doc false
+  def update_changeset(%User{} = user, attrs) do
+    user
+    |> changeset(attrs)
   end
 
   @doc false
@@ -37,6 +47,7 @@ defmodule Simple.Accounts.User do
     |> unique_constraint(:email)
     |> validate_required([:username, :email, :first_name, :last_name])
     |> put_pass_hash()
+    |> generate_icon_color(:default_color)
   end
 
   defp put_pass_hash(changeset) do

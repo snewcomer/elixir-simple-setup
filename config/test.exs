@@ -35,5 +35,7 @@ config :jsonapi,
 
 config :bcrypt_elixir, log_rounds: 4
 
+config :simple, :icon_color_generator, Simple.Helpers.TestGenerator
+
 # Set Corsica logging to output no console warning when rejecting a request
 config :simple, :corsica_log_level, [rejected: :debug]

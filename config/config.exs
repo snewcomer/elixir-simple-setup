@@ -30,6 +30,18 @@ config :simple, Simple.Guardian,
 
 config :simple, :corsica_log_level, [rejected: :warn]
 
+config :simple,
+  asset_host: System.get_env("CLOUDFRONT_DOMAIN")
+
+config :simple, :cloudex, Cloudex
+config :cloudex,
+  api_key: System.get_env("CLOUDEX_API_KEY"),
+  secret: System.get_env("CLOUDEX_SECRET"),
+  cloud_name: System.get_env("CLOUDEX_CLOUD_NAME")
+
+# Configures random icon color generator
+config :simple, :icon_color_generator, Simple.Helpers.Generator
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

@@ -38,6 +38,7 @@ defmodule Simple.Mixfile do
       {:bootleg, "~> 0.6"}, # deployment
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
+      {:cloudex, "~> 1.0"},
       {:credo, "~> 0.8", only: [:dev, :test]}, # Code style suggestions
       {:corsica, "~> 1.1.0"},
       {:distillery, "~> 1.5", runtime: false},
