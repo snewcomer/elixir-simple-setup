@@ -51,7 +51,7 @@ defmodule Simple.Accounts do
   """
   def create_user(attrs \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -100,5 +100,63 @@ defmodule Simple.Accounts do
   """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+  @doc """
+  Returns an `%User{}` for tracking user changes.
+
+  ## Examples
+
+      iex> check_email_availability(email)
+      %User{}
+
+  """
+  def check_email_availability(email) do
+    %{}
+    |> check_email_valid(email)
+    |> check_used(:email, email)
+  end
+
+  @doc """
+  Returns an `%User{}` for tracking user changes.
+
+  ## Examples
+
+      iex> check_username_availability(username)
+      %User{}
+
+  """
+  def check_username_availability(username) do
+    %{}
+    |> check_username_valid(username)
+    |> check_used(:username, username)
+  end
+
+  defp check_email_valid(struct, email) do
+    struct
+    |> Map.put(:valid, String.match?(email, ~r/@/))
+  end
+
+  defp check_username_valid(struct, username) do
+    valid =
+      username
+      |> String.length
+      |> in_range?(1, 39)
+
+    struct
+    |> Map.put(:valid, valid)
+  end
+
+  defp in_range?(number, min, max), do: number in min..max
+
+  defp check_used(struct, column, value) do
+    available =
+      User
+      |> where([u], field(u, ^column) == ^value)
+      |> Simple.Repo.all
+      |> Enum.empty?
+
+    struct
+    |> Map.put(:available, available)
   end
 end

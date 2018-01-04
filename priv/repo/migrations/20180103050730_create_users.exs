@@ -5,7 +5,6 @@ defmodule Simple.Repo.Migrations.CreateUsers do
     create table(:users, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :username, :string
-      add :password, :string
       add :encrypted_password, :string
       add :email, :string
       add :first_name, :string
@@ -14,5 +13,6 @@ defmodule Simple.Repo.Migrations.CreateUsers do
       timestamps()
     end
 
+    create index(:users, [:email], unique: true)
   end
 end

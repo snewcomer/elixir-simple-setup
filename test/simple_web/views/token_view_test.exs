@@ -1,5 +1,5 @@
-defmodule SimpleView.TokenViewTest do
-  use SimpleView.ViewCase
+defmodule SimpleWeb.TokenViewTest do
+  use SimpleWeb.ViewCase
 
   test "renders show" do
     token = "12345"

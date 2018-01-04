@@ -23,6 +23,9 @@ defmodule SimpleWeb do
       import Plug.Conn
       import SimpleWeb.Router.Helpers
       import SimpleWeb.Gettext
+
+      alias Simple.{Repo}
+      alias Plug.Conn
     end
   end
 

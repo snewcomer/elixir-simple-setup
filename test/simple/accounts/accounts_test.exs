@@ -6,9 +6,9 @@ defmodule Simple.AccountsTest do
   describe "users" do
     alias Simple.Accounts.User
 
-    @valid_attrs %{email: "some email", encrypted_password: "some encrypted_password", first_name: "some first_name", last_name: "some last_name", password: "some password", username: "some username"}
-    @update_attrs %{email: "some updated email", encrypted_password: "some updated encrypted_password", first_name: "some updated first_name", last_name: "some updated last_name", password: "some updated password", username: "some updated username"}
-    @invalid_attrs %{email: nil, encrypted_password: nil, first_name: nil, last_name: nil, password: nil, username: nil}
+    @valid_attrs %{email: "some email", first_name: "some first_name", last_name: "some last_name", password: "some password", username: "some username"}
+    @update_attrs %{email: "some updated email", first_name: "some updated first_name", last_name: "some updated last_name", username: "some updated username"}
+    @invalid_attrs %{email: nil, first_name: nil, last_name: nil, password: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -20,22 +20,25 @@ defmodule Simple.AccountsTest do
     end
 
     test "list_users/0 returns all users" do
-      user = user_fixture()
-      assert Accounts.list_users() == [user]
+      user_fixture()
+      assert Accounts.list_users() |> Enum.count == 1
     end
 
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
-      assert Accounts.get_user!(user.id) == user
+      ret_user = Accounts.get_user!(user.id)
+      assert user.email == ret_user.email
+      assert user.first_name == ret_user.first_name
+      assert user.last_name == ret_user.last_name
+      assert user.username == ret_user.username
     end
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
       assert user.email == "some email"
-      assert user.encrypted_password == "some encrypted_password"
       assert user.first_name == "some first_name"
       assert user.last_name == "some last_name"
-      assert user.password == "some password"
+      assert user.encrypted_password
       assert user.username == "some username"
     end
 
@@ -48,17 +51,14 @@ defmodule Simple.AccountsTest do
       assert {:ok, user} = Accounts.update_user(user, @update_attrs)
       assert %User{} = user
       assert user.email == "some updated email"
-      assert user.encrypted_password == "some updated encrypted_password"
       assert user.first_name == "some updated first_name"
       assert user.last_name == "some updated last_name"
-      assert user.password == "some updated password"
       assert user.username == "some updated username"
     end
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
-      assert user == Accounts.get_user!(user.id)
     end
 
     test "delete_user/1 deletes the user" do

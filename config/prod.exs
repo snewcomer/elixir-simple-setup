@@ -29,6 +29,9 @@ config :simple, allowed_origins: [
   "https://www.simple.com"
 ]
 
+config :simple, Simple.Guardian,
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+
 # Do not print debug messages in production
 config :logger, level: :info
 
@@ -69,6 +72,13 @@ config :logger, level: :info
 #
 #     config :simple, SimpleWeb.Endpoint, server: true
 #
+
+config :jsonapi,
+  host: "www.simple.com",
+  scheme: "https",
+  underscore_to_dash: true,
+  remove_links: true
+
 config :simple, Simple.Mailer,
   adapter: Bamboo.PostmarkAdapter,
   api_key: System.get_env("POSTMARK_API_KEY")

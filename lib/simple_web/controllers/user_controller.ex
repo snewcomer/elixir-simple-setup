@@ -4,32 +4,35 @@ defmodule SimpleWeb.UserController do
   alias Simple.Accounts
   alias Simple.Accounts.User
 
+  plug SimpleWeb.Plug.DataToAttributes
+
   action_fallback SimpleWeb.FallbackController
 
   def index(conn, _params) do
     users = Accounts.list_users()
-    render(conn, "index.json", users: users)
+    render(conn, SimpleWeb.UserView, "index.json", %{data: users})
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{} = user_params) do
     with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_path(conn, :show, user))
-      |> render("show.json", user: user)
+      |> render(SimpleWeb.UserView, "show.json", %{data: user})
     end
   end
 
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
-    render(conn, "show.json", user: user)
+    render(conn, SimpleWeb.UserView, "show.json", %{data: user})
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
+  @spec update(Plug.Conn.t, map) :: Conn.t
+  def update(%Conn{} = conn, %{"id" => id} = user_params) do
     user = Accounts.get_user!(id)
 
     with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
-      render(conn, "show.json", user: user)
+      render(conn, SimpleWeb.UserView, "show.json", %{data: user})
     end
   end
 
@@ -38,5 +41,17 @@ defmodule SimpleWeb.UserController do
     with {:ok, %User{}} <- Accounts.delete_user(user) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  @spec email_available(Conn.t, map) :: Conn.t
+  def email_available(%Conn{} = conn, %{"email" => email}) do
+    hash = Accounts.check_email_availability(email)
+    conn |> json(hash)
+  end
+
+  @spec username_available(Conn.t, map) :: Conn.t
+  def username_available(%Conn{} = conn, %{"username" => username}) do
+    hash = Accounts.check_username_availability(username)
+    conn |> json(hash)
   end
 end

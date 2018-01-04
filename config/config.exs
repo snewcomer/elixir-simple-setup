@@ -22,6 +22,12 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :simple, Simple.Guardian,
+  issuer: "Simple",
+  ttl: { 30, :days },
+  verify_issuer: true, # optional
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+
 config :simple, :corsica_log_level, [rejected: :warn]
 
 # Import environment specific config. This must remain at the bottom

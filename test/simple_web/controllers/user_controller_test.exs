@@ -1,12 +1,13 @@
 defmodule SimpleWeb.UserControllerTest do
-  use SimpleWeb.ConnCase
+
+  use SimpleWeb.ApiCase, resource_name: :user
 
   alias Simple.Accounts
   alias Simple.Accounts.User
 
-  @create_attrs %{email: "some email", encrypted_password: "some encrypted_password", first_name: "some first_name", last_name: "some last_name", password: "some password", username: "some username"}
-  @update_attrs %{email: "some updated email", encrypted_password: "some updated encrypted_password", first_name: "some updated first_name", last_name: "some updated last_name", password: "some updated password", username: "some updated username"}
-  @invalid_attrs %{email: nil, encrypted_password: nil, first_name: nil, last_name: nil, password: nil, username: nil}
+  @create_attrs %{email: "some@email.com", first_name: "some first_name", last_name: "some last_name", password: "some password", username: "some username"}
+  @update_attrs %{email: "some@updateemail.com", first_name: "some updated first_name", last_name: "some updated last_name", username: "some updated username"}
+  @invalid_attrs %{email: nil, first_name: nil, last_name: nil, username: nil}
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)
@@ -18,67 +19,123 @@ defmodule SimpleWeb.UserControllerTest do
   end
 
   describe "index" do
-    test "lists all users", %{conn: conn} do
-      conn = get conn, user_path(conn, :index)
-      assert json_response(conn, 200)["data"] == []
+    @tag :authenticated
+    test "lists all users", %{conn: conn, current_user: user} do
+      conn
+      |> request_index
+      |> json_response(200)
+      |> assert_ids_from_response([user.id])
     end
   end
 
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
-      conn = post conn, user_path(conn, :create), user: @create_attrs
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      data = 
+        conn
+        |> request_create(@create_attrs)
+        |> json_response(201)
+        |> Map.get("data")
+        |> Map.get("attributes")
 
-      conn = get conn, user_path(conn, :show, id)
-      assert json_response(conn, 200)["data"] == %{
-        "id" => id,
-        "email" => "some email",
-        "encrypted_password" => "some encrypted_password",
-        "first_name" => "some first_name",
-        "last_name" => "some last_name",
-        "password" => "some password",
-        "username" => "some username"}
+      assert data["email"] == "some@email.com"
+      assert data["first-name"] == "some first_name"
+      assert data["last-name"] == "some last_name"
+      assert data["username"] == "some username"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, user_path(conn, :create), user: @invalid_attrs
-      assert json_response(conn, 422)["errors"] != %{}
+      conn
+      |> request_create(@invalid_attrs)
+      |> json_response(422)
     end
   end
 
   describe "update user" do
     setup [:create_user]
 
-    test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
-      conn = put conn, user_path(conn, :update, user), user: @update_attrs
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+    @tag :authenticated
+    test "renders user when data is valid", %{conn: conn, user: %User{id: _id} = user} do
+      data =
+        conn
+        |> request_update(user.id, @update_attrs)
+        |> json_response(200)
+        |> Map.get("data")
+        |> Map.get("attributes")
 
-      conn = get conn, user_path(conn, :show, id)
-      assert json_response(conn, 200)["data"] == %{
-        "id" => id,
-        "email" => "some updated email",
-        "encrypted_password" => "some updated encrypted_password",
-        "first_name" => "some updated first_name",
-        "last_name" => "some updated last_name",
-        "password" => "some updated password",
-        "username" => "some updated username"}
+      assert data["email"] == "some@updateemail.com"
+      assert data["first-name"] == "some updated first_name"
+      assert data["last-name"] == "some updated last_name"
+      assert data["username"] == "some updated username"
     end
 
+    @tag :authenticated
     test "renders errors when data is invalid", %{conn: conn, user: user} do
-      conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
-      assert json_response(conn, 422)["errors"] != %{}
+      conn
+      |> request_update(user.id, @invalid_attrs)
+      |> json_response(422)
     end
   end
 
   describe "delete user" do
     setup [:create_user]
 
+    @tag :authenticated
     test "deletes chosen user", %{conn: conn, user: user} do
-      conn = delete conn, user_path(conn, :delete, user)
-      assert response(conn, 204)
+      conn 
+      |> request_delete(user.id)
+      |> response(204)
+
       assert_error_sent 404, fn ->
         get conn, user_path(conn, :show, user)
       end
+    end
+  end
+
+  describe "email_available" do
+    test "returns valid and available when email is valid and available", %{conn: conn} do
+      resp = get conn, user_path(conn, :email_available, %{email: "available@mail.com"})
+      json = json_response(resp, 200)
+      assert json["available"]
+      assert json["valid"]
+    end
+
+    test "returns valid but inavailable when email is valid but taken", %{conn: conn} do
+      insert(:user, email: "used@mail.com")
+      resp = get conn, user_path(conn, :email_available, %{email: "used@mail.com"})
+      json = json_response(resp, 200)
+      refute json["available"]
+      assert json["valid"]
+    end
+
+    test "returns as available but invalid when email is invalid", %{conn: conn} do
+      resp = get conn, user_path(conn, :email_available, %{email: "not_an_email"})
+      json = json_response(resp, 200)
+      assert json["available"]
+      refute json["valid"]
+    end
+  end
+
+  describe "username_available" do
+    test "returns as valid and available when username is valid and available", %{conn: conn} do
+      resp = get conn, user_path(conn, :username_available, %{username: "available"})
+      json = json_response(resp, 200)
+      assert json["available"]
+      assert json["valid"]
+    end
+
+    test "returns as valid, but inavailable when username is valid but taken", %{conn: conn} do
+      insert(:user, username: "used")
+      resp = get conn, user_path(conn, :username_available, %{username: "used"})
+      json = json_response(resp, 200)
+      refute json["available"]
+      assert json["valid"]
+    end
+
+    test "returns available but invalid when username is invalid", %{conn: conn} do
+      resp = get conn, user_path(conn, :username_available, %{username: ""})
+      json = json_response(resp, 200)
+      assert json["available"]
+      refute json["valid"]
     end
   end
 

@@ -2,6 +2,8 @@ defmodule Simple.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
   alias Simple.Accounts.User
+  alias Comeonin.Bcrypt
+  alias Ecto.Changeset
 
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -11,7 +13,8 @@ defmodule Simple.Accounts.User do
     field :encrypted_password, :string
     field :first_name, :string
     field :last_name, :string
-    field :password, :string
+    field :password, :string, virtual: true
+    field :password_confirmation, :string, virtual: true
     field :username, :string
 
     timestamps()
@@ -20,7 +23,28 @@ defmodule Simple.Accounts.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:username, :password, :encrypted_password, :email, :first_name, :last_name])
-    |> validate_required([:username, :password, :encrypted_password, :email, :first_name, :last_name])
+    |> cast(attrs, [:username, :password, :email, :first_name, :last_name])
+    |> validate_required([:username, :email, :first_name, :last_name])
+  end
+
+  @doc false
+  def create_changeset(%User{} = user, attrs) do
+    user
+    |> changeset(attrs)
+    |> validate_required([:password, :username, :email])
+    |> validate_length(:password, min: 6)
+    |> validate_length(:username, min: 1, max: 39)
+    |> unique_constraint(:email)
+    |> validate_required([:username, :email, :first_name, :last_name])
+    |> put_pass_hash()
+  end
+
+  defp put_pass_hash(changeset) do
+    case changeset do
+      %Changeset{valid?: true, changes: %{password: pass}} ->
+        put_change(changeset, :encrypted_password, Bcrypt.hashpwsalt(pass))
+      _ ->
+        changeset
+    end
   end
 end

@@ -5,7 +5,7 @@ defmodule Simple.Mixfile do
     [
       app: :simple,
       version: "0.0.1",
-      elixir: "~> 1.4",
+      elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -36,12 +36,16 @@ defmodule Simple.Mixfile do
       {:bamboo, "~> 0.7"}, # emails
       {:bamboo_postmark, "~> 0.4.1"}, # postmark adapter for emails
       {:bootleg, "~> 0.6"}, # deployment
+      {:comeonin, "~> 4.0"},
+      {:bcrypt_elixir, "~> 1.0"},
       {:credo, "~> 0.8", only: [:dev, :test]}, # Code style suggestions
       {:corsica, "~> 1.1.0"},
       {:distillery, "~> 1.5", runtime: false},
       {:ex_machina, "~> 2.1", only: :test}, # test factories
       {:ex_rated, "~> 1.2"},
       {:guardian, "~> 1.0"}, # Authentication (JWT)
+      {:jsonapi, git: "git@github.com:jeregrine/jsonapi.git"},
+      {:inflex, "~> 1.9"},
       {:phoenix, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},

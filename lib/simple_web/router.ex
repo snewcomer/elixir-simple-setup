@@ -17,9 +17,18 @@ defmodule SimpleWeb.Router do
     plug Simple.Auth.EnsureAuthPipeline
   end
 
-  scope "/api", SimpleWeb do
+  scope "/", SimpleWeb, host: "api." do
+    pipe_through [:api, :bearer_auth, :ensure_auth, :current_user]
+    resources "/users", UserController, only: [:index, :update, :delete]
+  end
+
+  scope "/", SimpleWeb, host: "api." do
     pipe_through [:api, :bearer_auth, :current_user]
-    resources "/users", UserController
+    post "/password/reset", PasswordResetController, :reset_password
+    post "/password/forgot", PasswordController, :forgot_password
+    get "/users/email_available", UserController, :email_available
+    get "/users/username_available", UserController, :username_available
+    resources "/users", UserController, only: [:show, :create]
   end
 
   scope "/", SimpleWeb do
