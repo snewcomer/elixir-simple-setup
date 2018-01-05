@@ -5,7 +5,9 @@ defmodule SimpleWeb.UserSocket do
   # channel "room:*", SimpleWeb.RoomChannel
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket
+  transport :websocket, Phoenix.Transports.WebSocket,
+    timeout: 45_000,
+    check_origin: Application.get_env(:simple, :allowed_origins)
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can
@@ -19,6 +21,14 @@ defmodule SimpleWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
+  def connect(%{"token" => token}, socket) do
+    with {:ok, claims} <- Simple.Guardian.decode_and_verify(token),
+         {:ok, user} <- Simple.Guardian.resource_from_claims(claims) do
+      {:ok, assign(socket, :current_user, user)}
+    else
+      _ -> {:ok, socket}
+    end
+  end
   def connect(_params, socket) do
     {:ok, socket}
   end
