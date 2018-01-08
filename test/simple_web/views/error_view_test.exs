@@ -6,7 +6,7 @@ defmodule SimpleWeb.ErrorViewTest do
 
   test "renders 404.json" do
     assert render(SimpleWeb.ErrorView, "404.json", []) ==
-           %{errors: %{detail: "Page not found"}}
+           %{errors: %{detail: "404 Not Found"}}
   end
 
   test "render 500.json" do

@@ -1,17 +1,15 @@
-defmodule SimpleWeb.UserView do
+defmodule SimpleWeb.ConversationView do
   use SimpleWeb, :view
 
-  use JSONAPI.View, type: "users"
+  use JSONAPI.View, type: "conversations"
 
   def fields do
-    [:email, :first_name, :last_name, :username, :inserted_at, :updated_at]
+    [:body, :title, :is_locked, :receive_notifications, :read_at, :status, :inserted_at, :updated_at]
   end
 
-  # def relationships do
-  #   # The post's author will be included by default
-  #   [author: {MyApp.UserView, :include},
-  #    comments: MyApp.CommentView]
-  # end
+  def relationships do
+    [user: {SimpleWeb.UserView, :include}]
+  end
 
   # def render("index.json", %{users: users}) do
   #   %{data: render_many(users, UserView, "user.json")}

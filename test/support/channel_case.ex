@@ -20,6 +20,9 @@ defmodule SimpleWeb.ChannelCase do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
 
+      import Simple.Factories
+      import SimpleWeb.ChannelCase
+
       # The default endpoint for testing
       @endpoint SimpleWeb.Endpoint
     end

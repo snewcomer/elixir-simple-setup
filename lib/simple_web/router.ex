@@ -20,6 +20,8 @@ defmodule SimpleWeb.Router do
   scope "/", SimpleWeb, host: "api." do
     pipe_through [:api, :bearer_auth, :ensure_auth, :current_user]
     resources "/users", UserController, only: [:index, :update, :delete]
+    resources "/conversations", ConversationController, only: [:index, :create, :show, :update, :delete]
+    resources "/conversation-parts", ConversationPartController, only: [:index, :create, :show, :update, :delete]
   end
 
   scope "/", SimpleWeb, host: "api." do

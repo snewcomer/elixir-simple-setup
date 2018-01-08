@@ -3,9 +3,9 @@ defmodule Simple.Policy do
   Handles authorization for various API actions performed on objects in the database.
   """
 
-  alias Simple.Accounts.{
-    User
-  }
+  alias Simple.Accounts.{User}
+  alias Simple.Messages.{Conversation}
+  alias Simple.Policy
 
   @doc ~S"""
   Determines if the specified user can perform the specified action on the
@@ -21,6 +21,12 @@ defmodule Simple.Policy do
       false -> {:error, :not_authorized}
     end
   end
+
+  def scope(Conversation, %User{} = current_user), do: Conversation |> Policy.Conversation.scope(current_user)
+
+  # Conversation
+  defp can?(%User{} = current_user, :show, %Conversation{} = conversation, %{}), do: Policy.Conversation.show?(current_user, conversation)
+  defp can?(%User{} = current_user, :update, %Conversation{} = conversation, %{}), do: Policy.Conversation.update?(current_user, conversation)
 
   # User
   @spec can?(User.t, atom, struct, map) :: boolean

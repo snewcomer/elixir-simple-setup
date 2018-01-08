@@ -13,7 +13,7 @@ config :simple,
 config :simple, SimpleWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "ANcO3Kr5Y6FSH9gYua3ryn4ZntCmJ/Wd+AW0LeE3V7vePZqCvPRDlUJIRdId0avI",
-  render_errors: [view: SimpleWeb.ErrorView, accepts: ~w(json)],
+  render_errors: [view: SimpleWeb.ErrorView, accepts: ~w(json json-api)],
   pubsub: [name: Simple.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
