@@ -9,6 +9,7 @@ defmodule SimpleWeb.TokenViewTest do
 
     expected_json = %{
       token: token,
+      refresh_token: token,
       user_id: user_id
     }
 

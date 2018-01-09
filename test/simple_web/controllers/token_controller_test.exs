@@ -10,9 +10,9 @@ defmodule SimpleWeb.TokenControllerTest do
     {:ok, conn: conn}
   end
 
-  defp create_payload(email, password) do
+  defp create_payload(username, password) do
     %{
-      "username" => email,
+      "username" => username,
       "password" => password
     }
   end
@@ -21,7 +21,7 @@ defmodule SimpleWeb.TokenControllerTest do
     @tag :wip
     test "authenticates and returns JWT and user ID when data is valid", %{conn: conn} do
       user = build(:user, %{password: "password"}) |> set_password("password") |> insert
-      conn = post conn, token_path(conn, :create), create_payload(user.email, user.password)
+      conn = post conn, token_path(conn, :create), create_payload(user.username, user.password)
 
       user_id = user.id
       response = json_response(conn, 201)
@@ -29,19 +29,19 @@ defmodule SimpleWeb.TokenControllerTest do
       assert response["user_id"] == user_id
     end
 
-    test "does not authenticate and renders errors when the email and password are missing", %{conn: conn} do
+    test "does not authenticate and renders errors when the username and password are missing", %{conn: conn} do
       conn = post conn, token_path(conn, :create), %{"username" => ""}
 
       response = json_response(conn, 401)
       [error | _] = response["errors"]
-      assert error["detail"] == "Please enter your email and password."
+      assert error["detail"] == "Please enter your username and password."
       assert renders_401_unauthorized?(error)
       refute response["token"]
       refute response["user_id"]
     end
 
     test "does not authenticate and renders errors when only the password is missing", %{conn: conn} do
-      conn = post conn, token_path(conn, :create), %{"username" => "test@email.com"}
+      conn = post conn, token_path(conn, :create), %{"username" => "test@username.com"}
 
       response = json_response(conn, 401)
       [error | _] = response["errors"]
@@ -53,11 +53,11 @@ defmodule SimpleWeb.TokenControllerTest do
 
     test "does not authenticate and renders errors when the password is wrong", %{conn: conn} do
       user = build(:user, %{password: "password"}) |> set_password("password") |> insert
-      conn = post conn, token_path(conn, :create), create_payload(user.email, "wrong password")
+      conn = post conn, token_path(conn, :create), create_payload(user.username, "wrong password")
 
       response = json_response(conn, 401)
       [error | _] = response["errors"]
-      assert error["detail"] == "Your password doesn't match the email #{user.email}."
+      assert error["detail"] == "Your password doesn't match the username #{user.username}."
       assert renders_401_unauthorized?(error)
       refute response["token"]
       refute response["user_id"]
@@ -68,7 +68,7 @@ defmodule SimpleWeb.TokenControllerTest do
 
       response = json_response(conn, 401)
       [error | _] = response["errors"]
-      assert error["detail"] == "We couldn't find a user with the email notauser@test.com."
+      assert error["detail"] == "We couldn't find a user with the username notauser@test.com."
       assert renders_401_unauthorized?(error)
       refute response["token"]
       refute response["user_id"]

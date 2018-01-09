@@ -4,10 +4,11 @@ defmodule SimpleWeb.UserViewTest do
   alias SimpleWeb.UserView
   alias Plug.Conn
 
+  @tag :wip
   test "renders all attributes and relationships properly" do
-    user = insert(:user, first_name: "First", last_name: "Last")
+    user = insert(:user, first_name: "First", last_name: "Last", default_color: "blue")
 
-    # host = Application.get_env(:simple, :asset_host)
+    host = Application.get_env(:simple, :asset_host)
 
     rendered_json = render(UserView, "show.json", %{data: user, conn: %Conn{}, params: user.id})
 
@@ -20,8 +21,8 @@ defmodule SimpleWeb.UserViewTest do
           "first-name" => user.first_name,
           "inserted-at" => user.inserted_at,
           "last-name" => user.last_name,
-          # "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
-          # "photo-thumb-url" => "#{host}/icons/user_default_thumb_light_blue.png",
+          "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
+          "photo-thumb-url" => "#{host}/icons/user_default_thumb_blue.png",
           "username" => user.username,
           "updated-at" => user.updated_at
         },

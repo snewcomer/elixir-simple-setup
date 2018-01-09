@@ -4,8 +4,8 @@ defmodule SimpleWeb.ConversationPartViewTest do
   alias Plug.Conn
 
   test "renders all attributes and relationships properly" do
-    conversation_part = insert(:conversation_part)
-    user = conversation_part.user
+    user = insert(:user, default_color: "blue")
+    conversation_part = insert(:conversation_part, user: user)
 
     rendered_json =
       SimpleWeb.ConversationPartView
@@ -13,6 +13,8 @@ defmodule SimpleWeb.ConversationPartViewTest do
         "show.json",
         %{data: conversation_part, conn: %Conn{}, params: conversation_part.id}
       )
+
+    host = Application.get_env(:simple, :asset_host)
 
     expected_json = %{
       :data => %{
@@ -39,8 +41,8 @@ defmodule SimpleWeb.ConversationPartViewTest do
           "first-name" => user.first_name,
           "inserted-at" => user.inserted_at,
           "last-name" => user.last_name,
-          # "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
-          # "photo-thumb-url" => "#{host}/icons/user_default_thumb_light_blue.png",
+          "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
+          "photo-thumb-url" => "#{host}/icons/user_default_thumb_blue.png",
           "username" => user.username,
           "updated-at" => user.updated_at
         },

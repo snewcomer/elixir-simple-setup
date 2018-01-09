@@ -6,8 +6,8 @@ defmodule SimpleWeb.ConversationViewTest do
   alias Simple.Repo
 
   test "renders all attributes and relationships properly" do
-    conversation = insert(:conversation)
-    user = conversation.user
+    user = insert(:user, default_color: "blue")
+    conversation = insert(:conversation, user: user)
     conversation_part = insert(:conversation_part, conversation: conversation, user: user)
 
     rendered_json =
@@ -16,6 +16,8 @@ defmodule SimpleWeb.ConversationViewTest do
         "show.json",
         %{data: conversation |> Repo.preload([:user, conversation_parts: [:user]]), conn: %Conn{}, params: conversation.id}
       )
+
+    host = Application.get_env(:simple, :asset_host)
 
     expected_json = %{
       :data => %{
@@ -55,8 +57,8 @@ defmodule SimpleWeb.ConversationViewTest do
             "first-name" => user.first_name,
             "inserted-at" => user.inserted_at,
             "last-name" => user.last_name,
-            # "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
-            # "photo-thumb-url" => "#{host}/icons/user_default_thumb_light_blue.png",
+            "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
+            "photo-thumb-url" => "#{host}/icons/user_default_thumb_blue.png",
             "username" => user.username,
             "updated-at" => user.updated_at
           },
