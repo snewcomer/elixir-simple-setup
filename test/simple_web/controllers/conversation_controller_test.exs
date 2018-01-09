@@ -58,11 +58,11 @@ defmodule SimpleWeb.ConversationControllerTest do
       assert conn |> request_show(conversation) |> json_response(401)
     end
 
-    # @tag :authenticated
-    # test "renders 403 when unauthorized", %{conn: conn} do
-    #   conversation = insert(:conversation)
-    #   assert conn |> request_show(conversation) |> json_response(403)
-    # end
+    @tag :authenticated
+    test "renders 403 when unauthorized", %{conn: conn} do
+      conversation = insert(:conversation)
+      assert conn |> request_show(conversation) |> json_response(403)
+    end
   end
 
   describe "create" do
@@ -112,27 +112,38 @@ defmodule SimpleWeb.ConversationControllerTest do
       assert conn |> request_update |> json_response(401)
     end
 
-    # @tag :authenticated
-    # test "does not update resource and renders 403 when not authorized", %{conn: conn} do
-    #   user = insert(:user)
-    #   insert(:conversation, user: user)
-    #   assert conn |> request_update() |> json_response(403)
-    # end
+    @tag :authenticated
+    test "does not update resource and renders 403 when not authorized", %{conn: conn} do
+      assert conn |> request_update() |> json_response(403)
+    end
   end
 
   describe "delete" do
 
     @tag :authenticated
-    test "deletes conversation", %{conn: conn} do
-      conversation = insert(:conversation)
+    test "deletes conversation", %{conn: conn, current_user: user} do
+      conversation = insert(:conversation, user: user)
 
       conn 
       |> request_delete(conversation.id)
       |> response(204)
+    end
 
-      # assert_error_sent 404, fn ->
-      #   get conn, conversation_path(conn, :show, conversation.id)
-      # end
+    test "renders 401 when not authenticated", %{conn: conn} do
+      conversation = insert(:conversation)
+
+      conn 
+      |> request_delete(conversation.id)
+      |> response(401)
+    end
+
+    @tag :authenticated
+    test "renders 403 when not authorized", %{conn: conn} do
+      conversation = insert(:conversation)
+
+      conn 
+      |> request_delete(conversation.id)
+      |> response(403)
     end
   end
 

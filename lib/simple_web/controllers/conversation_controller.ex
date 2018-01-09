@@ -28,13 +28,16 @@ defmodule SimpleWeb.ConversationController do
 
   @spec show(Conn.t, map) :: Conn.t
   def show(conn, %{"id" => id}) do
-    conversation = Messages.get_conversation!(id)
-    render(conn, "show.json", %{data: conversation})
+    with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
+        %Conversation{} = conversation <- Messages.get_conversation(id),
+        {:ok, :authorized} <- current_user |> Policy.authorize(:show, conversation, %{}) do
+        conn |> render("show.json", %{data: conversation})
+    end
   end
 
   @spec update(Conn.t, map) :: Conn.t
   def update(%Conn{} = conn, %{"id" => id} = params) do
-    with %Conversation{} = conversation <- Messages.get_conversation!(id),
+    with %Conversation{} = conversation <- Messages.get_conversation(id),
         %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
         {:ok, :authorized} <- current_user |> Policy.authorize(:update, conversation),
         {:ok, %Conversation{} = updated_conversation} <- conversation |> Messages.update_conversation(params)
@@ -44,9 +47,12 @@ defmodule SimpleWeb.ConversationController do
   end
 
   def delete(conn, %{"id" => id}) do
-    conversation = Messages.get_conversation!(id)
-    with {:ok, %Conversation{}} <- Messages.delete_conversation(conversation) do
-      send_resp(conn, :no_content, "")
+    conversation = Messages.get_conversation(id)
+    with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
+        {:ok, :authorized} <- current_user |> Policy.authorize(:delete, conversation),
+        {:ok, %Conversation{}} <- Messages.delete_conversation(conversation)
+      do
+        send_resp(conn, :no_content, "")
     end
   end
 end

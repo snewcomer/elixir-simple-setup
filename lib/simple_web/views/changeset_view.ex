@@ -38,7 +38,7 @@ defmodule SimpleWeb.ChangesetView do
       detail: format_detail(attribute, message),
       title: message,
       source: %{
-        pointer: "data/attributes/#{Utils.format_key(attribute)}"
+        pointer: "data/attributes/#{format_key(attribute)}"
       },
       status: "422"
     }
@@ -53,9 +53,19 @@ defmodule SimpleWeb.ChangesetView do
   end
 
   defp format_detail(attribute, message) do
-    "#{attribute |> Utils.humanize |> translate_attribute} #{message}"
+    "#{attribute |> humanize |> translate_attribute} #{message}"
   end
 
   defp translate_attribute("Cloudinary public"), do: dgettext("errors", "Cloudinary public")
   defp translate_attribute(attribute), do: attribute
+
+  @doc false
+  defp humanize(atom) when is_atom(atom), do: humanize(Atom.to_string(atom))
+  defp humanize(str), do: String.capitalize(str)
+
+  @doc false
+  def format_key(k) when is_atom(k), do: k |> Atom.to_string |> format_key
+  def format_key(key), do: do_format_key(key, :dasherized)
+
+  def do_format_key(key, :dasherized),  do: String.replace(key, "_", "-")
 end

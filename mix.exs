@@ -67,8 +67,10 @@ defmodule Simple.Mixfile do
   defp aliases do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.test_setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      "test": ["ecto.create --quiet", "ecto.migrate", "test"],
+      "ecto.test_reset": ["ecto.drop", "ecto.test_setup"]
     ]
   end
 end

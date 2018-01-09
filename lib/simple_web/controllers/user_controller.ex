@@ -2,6 +2,7 @@ defmodule SimpleWeb.UserController do
   use SimpleWeb, :controller
 
   alias Simple.Accounts
+  alias Simple.{Policy}
   alias Simple.Accounts.User
 
   plug SimpleWeb.Plug.DataToAttributes
@@ -22,24 +23,33 @@ defmodule SimpleWeb.UserController do
     end
   end
 
+  @spec show(Plug.Conn.t, map) :: Conn.t
   def show(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-    render(conn, SimpleWeb.UserView, "show.json", %{data: user})
+    with %User{} = _current_user <- conn |> Simple.Guardian.Plug.current_resource,
+        %User{} = user <- Accounts.get_user!(id)
+    do
+      conn |> render("show.json", %{data: user})
+    end
   end
 
   @spec update(Plug.Conn.t, map) :: Conn.t
   def update(%Conn{} = conn, %{"id" => id} = user_params) do
-    user = Accounts.get_user!(id)
-
-    with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
-      render(conn, SimpleWeb.UserView, "show.json", %{data: user})
+    with %User{} = user <- Accounts.get_user!(id),
+        %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
+        {:ok, :authorized} <- current_user |> Policy.authorize(:update, user),
+        {:ok, %User{} = updated_user} <- user |> Accounts.update_user(user_params)
+      do
+        conn |> render("show.json", %{data: updated_user})
     end
   end
 
   def delete(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
-    with {:ok, %User{}} <- Accounts.delete_user(user) do
-      send_resp(conn, :no_content, "")
+    with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
+        {:ok, :authorized} <- current_user |> Policy.authorize(:delete, user),
+        {:ok, %User{}} <- Accounts.delete_user(user)
+      do
+        send_resp(conn, :no_content, "")
     end
   end
 

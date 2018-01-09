@@ -48,13 +48,18 @@ defmodule SimpleWeb.UserControllerTest do
       |> request_create(@invalid_attrs)
       |> json_response(422)
     end
+
+    @tag :authenticated
+    test "renders 201 when authenticated", %{conn: conn} do
+      assert conn |> request_create(@create_attrs) |> json_response(201)
+    end
   end
 
   describe "update user" do
     setup [:create_user]
 
     @tag :authenticated
-    test "renders user when data is valid", %{conn: conn, user: %User{id: _id} = user} do
+    test "renders user when data is valid", %{conn: conn, current_user: %User{id: _id} = user} do
       data =
         conn
         |> request_update(user.id, @update_attrs)
@@ -69,10 +74,20 @@ defmodule SimpleWeb.UserControllerTest do
     end
 
     @tag :authenticated
-    test "renders errors when data is invalid", %{conn: conn, user: user} do
+    test "renders errors when data is invalid", %{conn: conn, current_user: user} do
       conn
       |> request_update(user.id, @invalid_attrs)
       |> json_response(422)
+    end
+
+    test "renders 401 when not authenticated", %{conn: conn} do
+      conn |> request_update |> json_response(401)
+    end
+
+    @tag :authenticated
+    test "does not update resource and renders 403 when not authorized", %{conn: conn} do
+      user = insert(:user, admin: false)
+      assert conn |> request_update(user.id, @update_attrs) |> json_response(403)
     end
   end
 
@@ -80,14 +95,23 @@ defmodule SimpleWeb.UserControllerTest do
     setup [:create_user]
 
     @tag :authenticated
-    test "deletes chosen user", %{conn: conn, user: user} do
+    test "deletes chosen user", %{conn: conn, current_user: user} do
       conn 
       |> request_delete(user.id)
       |> response(204)
+    end
 
-      assert_error_sent 404, fn ->
-        get conn, user_path(conn, :show, user)
-      end
+    test "renders 401 when not authenticated", %{conn: conn, user: user} do
+      conn 
+      |> request_delete(user.id)
+      |> response(401)
+    end
+
+    @tag :authenticated
+    test "renders 403 when not authorized", %{conn: conn, user: user} do
+      conn 
+      |> request_delete(user.id)
+      |> response(403)
     end
   end
 

@@ -113,8 +113,8 @@ defmodule SimpleWeb.ApiCase do
       end
 
       def request_update(conn), do: request_update(conn, %{})
-      def request_update(conn, :not_found), do: request_update(conn, -1, %{})
-      def request_update(conn, attrs), do: request_update(conn, default_record(), attrs)
+      def request_update(conn, :not_found), do: request_update(conn, "2b7934d0-4886-4d64-a688-06aa9505b5b0", %{})
+      def request_update(conn, attrs), do: request_update(conn, default_record().id, attrs)
       def request_update(conn, resource_or_id, attrs) do
         payload = Simple.JsonAPIHelpers.build_json_payload(attrs, factory_name() |> Atom.to_string, resource_or_id)
         path = conn |> path_for(:update, resource_or_id)
@@ -122,7 +122,7 @@ defmodule SimpleWeb.ApiCase do
       end
 
       def request_delete(conn), do: request_delete(conn, default_record())
-      def request_delete(conn, :not_found), do: request_delete(conn, -1)
+      def request_delete(conn, :not_found), do: request_delete(conn, "2b7934d0-4886-4d64-a688-06aa9505b5b0")
       def request_delete(conn, resource_or_id) do
         path = conn |> path_for(:delete, resource_or_id)
         conn |> delete(path)

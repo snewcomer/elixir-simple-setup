@@ -31,4 +31,11 @@ defmodule Simple.Policy.Conversation do
     true
   end
   def update?(_, _), do: false
+
+  def delete?(%User{admin: true}, _conversation), do: true
+  def delete?(%User{id: user_id}, %Conversation{user_id: target_user_id})
+    when user_id == target_user_id do
+    true
+  end
+  def delete?(_, _), do: false
 end
