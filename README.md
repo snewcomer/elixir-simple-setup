@@ -1,5 +1,15 @@
 # Simple
 
+- [X] JSON API....api
+- [X] User model
+- [X] Conversations and Conversation Messages Model
+- [X] Conversations Channel
+- [X] Permissions and Authorizations
+- [X] Integration with Cloudinary
+- [X] Error handling built in
+- [X] Bamboo email with Postmark
+- [X] Bootleg for deployment
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
