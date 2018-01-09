@@ -14,7 +14,7 @@ defmodule SimpleWeb.ConversationViewTest do
       SimpleWeb.ConversationView
       |> render(
         "show.json",
-        %{data: conversation |> Repo.preload([:conversation_parts, :user]), conn: %Conn{}, params: conversation.id}
+        %{data: conversation |> Repo.preload([:user, conversation_parts: [:user]]), conn: %Conn{}, params: conversation.id}
       )
 
     expected_json = %{
@@ -76,7 +76,7 @@ defmodule SimpleWeb.ConversationViewTest do
           relationships: %{
             "user" => %{
               data: %{
-                id: nil,
+                id: user.id,
                 type: "users"
               }
             }

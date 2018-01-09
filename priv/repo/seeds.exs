@@ -3,32 +3,32 @@ alias Simple.Repo
 
 users = [
   %{
-    email: "owner@codecorps.org",
+    email: "owner@simple.org",
     first_name: "Code Corps",
     last_name: "Owner",
     password: "password",
-    username: "codecorps-owner"
+    username: "simple-owner"
   },
   %{
-    email: "admin@codecorps.org",
+    email: "admin@simple.org",
     first_name: "Code Corps",
     last_name: "Admin",
     password: "password",
-    username: "codecorps-admin"
+    username: "simple-admin"
   },
   %{
-    email: "contributor@codecorps.org",
+    email: "contributor@simple.org",
     first_name: "Code Corps",
     last_name: "Contributor",
     password: "password",
-    username: "codecorps-contributor"
+    username: "simple-contributor"
   },
   %{
-    email: "pending@codecorps.org",
+    email: "pending@simple.org",
     first_name: "Code Corps",
     last_name: "Pending",
     password: "password",
-    username: "codecorps-pending"
+    username: "simple-pending"
   }
 ]
 

@@ -81,6 +81,10 @@ defmodule SimpleWeb.ConversationControllerTest do
       assert data["status"] == "open"
     end
 
+    test "renders 401 when unauthenticated", %{conn: conn} do
+      assert conn |> request_create() |> json_response(401)
+    end
+
     @tag :authenticated
     test "renders errors when data is invalid", %{conn: conn} do
       conn

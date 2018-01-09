@@ -17,12 +17,14 @@ defmodule SimpleWeb.ConversationController do
   end
 
   @spec create(Conn.t, map) :: Conn.t
-  def create(conn, conversation_params) do
-    with {:ok, %Conversation{} = conversation} <- Messages.create_conversation(conversation_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", conversation_path(conn, :show, conversation))
-      |> render("show.json", %{data: conversation})
+  def create(conn, params) do
+    with %User{} = _current_user <- conn |> Simple.Guardian.Plug.current_resource,
+         {:ok, %Conversation{} = conversation} <- Messages.create_conversation(params)
+      do
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", conversation_path(conn, :show, conversation))
+        |> render("show.json", %{data: conversation})
     end
   end
 
@@ -30,7 +32,8 @@ defmodule SimpleWeb.ConversationController do
   def show(conn, %{"id" => id}) do
     with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
         %Conversation{} = conversation <- Messages.get_conversation(id) |> preload(),
-        {:ok, :authorized} <- current_user |> Policy.authorize(:show, conversation, %{}) do
+        {:ok, :authorized} <- current_user |> Policy.authorize(:show, conversation, %{}) 
+      do
         conn |> render("show.json", %{data: conversation})
     end
   end

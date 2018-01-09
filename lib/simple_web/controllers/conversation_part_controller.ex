@@ -13,7 +13,7 @@ defmodule SimpleWeb.ConversationPartController do
   plug SimpleWeb.Plug.DataToAttributes
 
   @spec index(Conn.t, map) :: Conn.t
-  def index(%Conn{} = conn, %{} = params) do
+  def index(%Conn{} = conn, _params) do
     with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
          conversation_parts <- ConversationPart |> Policy.scope(current_user) |> Messages.list_conversation_parts() |> preload() do
       conn |> render("index.json", %{data: conversation_parts})
