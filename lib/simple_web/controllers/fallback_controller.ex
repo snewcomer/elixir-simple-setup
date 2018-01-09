@@ -1,20 +1,36 @@
 defmodule SimpleWeb.FallbackController do
-  @moduledoc """
-  Translates controller action results into valid `Plug.Conn` responses.
-
-  See `Phoenix.Controller.action_fallback/1` for more details.
-  """
+  @moduledoc false
   use SimpleWeb, :controller
 
-  def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
+  alias Ecto.Changeset
+
+  @type supported_fallbacks :: {:error, Changeset.t} |
+                               {:error, :not_authorized} |
+                               nil
+
+  @doc ~S"""
+  Default fallback for different `with` clause errors in controllers across the
+  application.
+  """
+  @spec call(Conn.t, supported_fallbacks) :: Conn.t
+  def call(%Conn{} = conn, {:error, %Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
-    |> render(SimpleWeb.ChangesetView, "error.json", changeset: changeset)
+    |> render(SimpleWeb.ChangesetView, "422.json", changeset: changeset)
   end
-
-  def call(conn, {:error, :not_found}) do
+  def call(%Conn{} = conn, {:error, :not_authorized}) do
+    conn
+    |> put_status(403)
+    |> render(SimpleWeb.TokenView, "403.json", message: "You are not authorized to perform this action.")
+  end
+  def call(%Conn{} = conn, {:error, :expired}) do
     conn
     |> put_status(:not_found)
-    |> render(SimpleWeb.ErrorView, :"404")
+    |> render(SimpleWeb.ErrorView, "404.json", %{})
+  end
+  def call(%Conn{} = conn, nil) do
+    conn
+    |> put_status(:not_found)
+    |> render(SimpleWeb.ErrorView, "404.json", %{})
   end
 end
