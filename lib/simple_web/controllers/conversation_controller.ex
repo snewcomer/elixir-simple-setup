@@ -11,7 +11,7 @@ defmodule SimpleWeb.ConversationController do
   @spec index(Conn.t, map) :: Conn.t
   def index(conn, params) do
     with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
-      conversations <- Conversation |> Policy.scope(current_user) |> Messages.list_conversations(params) do
+      conversations <- Conversation |> Policy.scope(current_user) |> Messages.list_conversations(params) |> preload() do
       conn |> render("index.json", %{data: conversations})
     end
   end
@@ -29,7 +29,7 @@ defmodule SimpleWeb.ConversationController do
   @spec show(Conn.t, map) :: Conn.t
   def show(conn, %{"id" => id}) do
     with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
-        %Conversation{} = conversation <- Messages.get_conversation(id),
+        %Conversation{} = conversation <- Messages.get_conversation(id) |> preload(),
         {:ok, :authorized} <- current_user |> Policy.authorize(:show, conversation, %{}) do
         conn |> render("show.json", %{data: conversation})
     end
@@ -37,7 +37,7 @@ defmodule SimpleWeb.ConversationController do
 
   @spec update(Conn.t, map) :: Conn.t
   def update(%Conn{} = conn, %{"id" => id} = params) do
-    with %Conversation{} = conversation <- Messages.get_conversation(id),
+    with %Conversation{} = conversation <- Messages.get_conversation(id) |> preload(),
         %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
         {:ok, :authorized} <- current_user |> Policy.authorize(:update, conversation),
         {:ok, %Conversation{} = updated_conversation} <- conversation |> Messages.update_conversation(params)
@@ -54,5 +54,11 @@ defmodule SimpleWeb.ConversationController do
       do
         send_resp(conn, :no_content, "")
     end
+  end
+
+  @preloads [:user, conversation_parts: [:user]]
+
+  def preload(data) do
+    Repo.preload(data, @preloads)
   end
 end

@@ -5,6 +5,7 @@ defmodule Simple.Factories do
   use ExMachina.Ecto, repo: Simple.Repo
 
   alias Simple.Accounts.User
+  alias Simple.Messages.{Conversation, ConversationPart}
 
   def user_factory do
     %User{
@@ -15,7 +16,7 @@ defmodule Simple.Factories do
   end
 
   def conversation_factory do
-    %Simple.Messages.Conversation{
+    %Conversation{
       body: sequence(:body, &"Body#{&1}"),
       status: "open",
       title: sequence(:body, &"Title#{&1}"),
@@ -24,12 +25,12 @@ defmodule Simple.Factories do
     }
   end
 
-  # def conversation_part_factory do
-  #   %Simple.ConversationPart{
-  #     body: sequence(:body, &"Reply to conversation #{&1}"),
-  #     read_at: nil,
-  #     author: build(:user),
-  #     conversation: build(:conversation)
-  #   }
-  # end
+  def conversation_part_factory do
+    %ConversationPart{
+      body: sequence(:body, &"Reply to conversation #{&1}"),
+      read_at: nil,
+      user: build(:user),
+      conversation: build(:conversation)
+    }
+  end
 end

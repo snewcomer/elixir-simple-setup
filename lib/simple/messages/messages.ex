@@ -72,7 +72,7 @@ defmodule Simple.Messages do
   """
   def update_conversation(%Conversation{} = conversation, attrs) do
     conversation
-    |> Conversation.changeset(attrs)
+    |> Conversation.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -105,99 +105,99 @@ defmodule Simple.Messages do
     Conversation.changeset(conversation, %{})
   end
 
-  # alias Simple.Messages.ConversationPart
+  alias Simple.Messages.ConversationPart
 
-  # @doc """
-  # Returns the list of conversation_parts.
+  @doc """
+  Returns the list of conversation_parts.
 
-  # ## Examples
+  ## Examples
 
-  #     iex> list_conversation_parts()
-  #     [%ConversationPart{}, ...]
+      iex> list_conversation_parts()
+      [%ConversationPart{}, ...]
 
-  # """
-  # def list_conversation_parts do
-  #   Repo.all(ConversationPart)
-  # end
+  """
+  def list_conversation_parts(query) do
+    query |> Repo.all()
+  end
 
-  # @doc """
-  # Gets a single conversation_part.
+  @doc """
+  Gets a single conversation_part.
 
-  # Raises `Ecto.NoResultsError` if the Conversation part does not exist.
+  Raises `Ecto.NoResultsError` if the Conversation part does not exist.
 
-  # ## Examples
+  ## Examples
 
-  #     iex> get_conversation_part!(123)
-  #     %ConversationPart{}
+      iex> get_conversation_part!(123)
+      %ConversationPart{}
 
-  #     iex> get_conversation_part!(456)
-  #     ** (Ecto.NoResultsError)
+      iex> get_conversation_part!(456)
+      ** (Ecto.NoResultsError)
 
-  # """
-  # def get_conversation_part!(id), do: Repo.get!(ConversationPart, id)
+  """
+  def get_conversation_part(id), do: Repo.get(ConversationPart, id)
 
-  # @doc """
-  # Creates a conversation_part.
+  @doc """
+  Creates a conversation_part.
 
-  # ## Examples
+  ## Examples
 
-  #     iex> create_conversation_part(%{field: value})
-  #     {:ok, %ConversationPart{}}
+      iex> create_conversation_part(%{field: value})
+      {:ok, %ConversationPart{}}
 
-  #     iex> create_conversation_part(%{field: bad_value})
-  #     {:error, %Ecto.Changeset{}}
+      iex> create_conversation_part(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
 
-  # """
-  # def create_conversation_part(attrs \\ %{}) do
-  #   %ConversationPart{}
-  #   |> ConversationPart.changeset(attrs)
-  #   |> Repo.insert()
-  # end
+  """
+  def create_conversation_part(attrs \\ %{}) do
+    %ConversationPart{}
+    |> ConversationPart.changeset(attrs)
+    |> Repo.insert()
+  end
 
-  # @doc """
-  # Updates a conversation_part.
+  @doc """
+  Updates a conversation_part.
 
-  # ## Examples
+  ## Examples
 
-  #     iex> update_conversation_part(conversation_part, %{field: new_value})
-  #     {:ok, %ConversationPart{}}
+      iex> update_conversation_part(conversation_part, %{field: new_value})
+      {:ok, %ConversationPart{}}
 
-  #     iex> update_conversation_part(conversation_part, %{field: bad_value})
-  #     {:error, %Ecto.Changeset{}}
+      iex> update_conversation_part(conversation_part, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
 
-  # """
-  # def update_conversation_part(%ConversationPart{} = conversation_part, attrs) do
-  #   conversation_part
-  #   |> ConversationPart.changeset(attrs)
-  #   |> Repo.update()
-  # end
+  """
+  def update_conversation_part(%ConversationPart{} = conversation_part, attrs) do
+    conversation_part
+    |> ConversationPart.changeset(attrs)
+    |> Repo.update()
+  end
 
-  # @doc """
-  # Deletes a ConversationPart.
+  @doc """
+  Deletes a ConversationPart.
 
-  # ## Examples
+  ## Examples
 
-  #     iex> delete_conversation_part(conversation_part)
-  #     {:ok, %ConversationPart{}}
+      iex> delete_conversation_part(conversation_part)
+      {:ok, %ConversationPart{}}
 
-  #     iex> delete_conversation_part(conversation_part)
-  #     {:error, %Ecto.Changeset{}}
+      iex> delete_conversation_part(conversation_part)
+      {:error, %Ecto.Changeset{}}
 
-  # """
-  # def delete_conversation_part(%ConversationPart{} = conversation_part) do
-  #   Repo.delete(conversation_part)
-  # end
+  """
+  def delete_conversation_part(%ConversationPart{} = conversation_part) do
+    Repo.delete(conversation_part)
+  end
 
-  # @doc """
-  # Returns an `%Ecto.Changeset{}` for tracking conversation_part changes.
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking conversation_part changes.
 
-  # ## Examples
+  ## Examples
 
-  #     iex> change_conversation_part(conversation_part)
-  #     %Ecto.Changeset{source: %ConversationPart{}}
+      iex> change_conversation_part(conversation_part)
+      %Ecto.Changeset{source: %ConversationPart{}}
 
-  # """
-  # def change_conversation_part(%ConversationPart{} = conversation_part) do
-  #   ConversationPart.changeset(conversation_part, %{})
-  # end
+  """
+  def change_conversation_part(%ConversationPart{} = conversation_part) do
+    ConversationPart.changeset(conversation_part, %{})
+  end
 end

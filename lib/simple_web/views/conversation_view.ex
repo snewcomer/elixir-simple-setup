@@ -8,7 +8,7 @@ defmodule SimpleWeb.ConversationView do
   end
 
   def relationships do
-    [user: {SimpleWeb.UserView, :include}]
+    [user: {SimpleWeb.UserView, :include}, conversation_parts: {SimpleWeb.ConversationPartView, :include}]
   end
 
   # def render("index.json", %{users: users}) do

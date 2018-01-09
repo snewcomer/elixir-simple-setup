@@ -67,10 +67,11 @@ defmodule SimpleWeb.ConversationControllerTest do
 
   describe "create" do
     @tag :authenticated
-    test "renders user when data is valid", %{conn: conn} do
+    test "renders user when data is valid", %{conn: conn, current_user: user} do
+      attrs = Map.put_new(@valid_attrs, :user_id, user.id)
       data = 
         conn
-        |> request_create(@valid_attrs)
+        |> request_create(attrs)
         |> json_response(201)
         |> Map.get("data")
         |> Map.get("attributes")

@@ -9,7 +9,7 @@ defmodule Simple.Repo.Migrations.CreateConversations do
       add :is_locked, :boolean, default: false, null: false
       add :receive_notifications, :boolean, default: false, null: false
       add :read_at, :utc_datetime, null: true
-      add :status, :string
+      add :status, :string, null: false, default: "open"
       add :user_id, references(:users, on_delete: :nothing, type: :binary_id)
 
       timestamps()

@@ -3,18 +3,18 @@ defmodule SimpleWeb.ConversationViewTest do
 
   alias Plug.Conn
 
-  # alias Simple.Repo
+  alias Simple.Repo
 
   test "renders all attributes and relationships properly" do
     conversation = insert(:conversation)
     user = conversation.user
-    # conversation_part = insert(:conversation_part, conversation: conversation)
+    conversation_part = insert(:conversation_part, conversation: conversation, user: user)
 
     rendered_json =
       SimpleWeb.ConversationView
       |> render(
         "show.json",
-        %{data: conversation, conn: %Conn{}, params: conversation.id}
+        %{data: conversation |> Repo.preload([:conversation_parts, :user]), conn: %Conn{}, params: conversation.id}
       )
 
     expected_json = %{
@@ -32,14 +32,14 @@ defmodule SimpleWeb.ConversationViewTest do
           "updated-at" => conversation.updated_at
         },
         relationships: %{
-          # "conversation-parts" => %{
-          #   "data" => [
-          #     %{
-          #       "id" => conversation_part.id
-          #       "type" => "conversation-part"
-          #     }
-          #   ]
-          # },
+          "conversation-parts" => %{
+            :data => [
+              %{
+                id: conversation_part.id,
+                type: "conversation-parts"
+              }
+            ]
+          },
           "user" => %{
             :data => %{
               id: conversation.user_id,
@@ -48,21 +48,41 @@ defmodule SimpleWeb.ConversationViewTest do
           }
         },
       },
-      included: [%{
-        attributes: %{
-          "email" => user.email,
-          "first-name" => user.first_name,
-          "inserted-at" => user.inserted_at,
-          "last-name" => user.last_name,
-          # "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
-          # "photo-thumb-url" => "#{host}/icons/user_default_thumb_light_blue.png",
-          "username" => user.username,
-          "updated-at" => user.updated_at
+      included: [
+        %{
+          attributes: %{
+            "email" => user.email,
+            "first-name" => user.first_name,
+            "inserted-at" => user.inserted_at,
+            "last-name" => user.last_name,
+            # "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
+            # "photo-thumb-url" => "#{host}/icons/user_default_thumb_light_blue.png",
+            "username" => user.username,
+            "updated-at" => user.updated_at
+          },
+          id: user.id,
+          type: "users",
+          relationships: %{}
         },
-        id: user.id,
-        type: "users",
-        relationships: %{}
-      }]
+        %{
+          attributes: %{
+            "body" => conversation_part.body,
+            "read-at" => conversation_part.read_at,
+            "inserted-at" => conversation_part.inserted_at,
+            "updated-at" => conversation_part.updated_at
+          },
+          id: conversation_part.id,
+          type: "conversation-parts",
+          relationships: %{
+            "user" => %{
+              data: %{
+                id: nil,
+                type: "users"
+              }
+            }
+          }
+        }
+    ]
     }
 
     assert rendered_json == expected_json

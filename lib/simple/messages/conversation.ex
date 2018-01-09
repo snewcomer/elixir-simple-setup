@@ -1,7 +1,8 @@
 defmodule Simple.Messages.Conversation do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Simple.Messages.Conversation
+  alias Simple.Messages.{Conversation, ConversationPart}
+  alias Simple.Accounts.{User}
 
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -11,10 +12,11 @@ defmodule Simple.Messages.Conversation do
     field :is_locked, :boolean, default: false
     field :read_at, :utc_datetime, null: true
     field :receive_notifications, :boolean, default: false
-    field :status, :string
+    field :status, :string, null: false, default: "open"
     field :title, :string
 
-    belongs_to :user, Simple.Accounts.User
+    belongs_to :user, User
+    has_many :conversation_parts, ConversationPart
 
     timestamps()
   end
@@ -22,9 +24,17 @@ defmodule Simple.Messages.Conversation do
   @doc false
   def changeset(%Conversation{} = conversation, attrs) do
     conversation
-    |> cast(attrs, [:body, :title, :is_locked, :receive_notifications, :read_at, :status])
+    |> cast(attrs, [:body, :title, :is_locked, :receive_notifications, :read_at, :user_id])
+    |> validate_required([:body, :title, :user_id])
+    |> assoc_constraint(:user)
+  end
+
+  @doc false
+  def update_changeset(struct, %{} = params) do
+    struct
+    |> changeset(params)
+    |> cast(params, [:status])
     |> validate_inclusion(:status, statuses())
-    |> validate_required([:body, :title])
   end
 
   defp statuses do
