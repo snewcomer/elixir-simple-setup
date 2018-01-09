@@ -7,7 +7,7 @@ defmodule Simple.Policy.User do
   alias Simple.Accounts.User
 
   @spec update?(User.t, User.t) :: boolean
-  def delete?(%User{admin: true}, _conversation), do: true
+  def update?(%User{admin: true}, _conversation), do: true
   def update?(%User{id: current_user_id}, %User{id: user_id})
     when current_user_id == user_id, do: true
   def update?(%User{}, %User{}), do: false

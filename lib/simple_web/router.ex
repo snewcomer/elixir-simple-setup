@@ -26,6 +26,8 @@ defmodule SimpleWeb.Router do
 
   scope "/", SimpleWeb, host: "api." do
     pipe_through [:api, :bearer_auth, :current_user]
+    post "/token", TokenController, :create
+    post "/token/refresh", TokenController, :refresh
     post "/password/reset", PasswordResetController, :reset_password
     post "/password/forgot", PasswordController, :forgot_password
     get "/users/email_available", UserController, :email_available

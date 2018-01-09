@@ -33,4 +33,10 @@ defmodule Simple.Factories do
       conversation: build(:conversation)
     }
   end
+
+  @spec set_password(CodeCorps.User.t, String.t) :: CodeCorps.User.t
+  def set_password(user, password) do
+    hashed_password = Comeonin.Bcrypt.hashpwsalt(password)
+    %{user | encrypted_password: hashed_password}
+  end
 end

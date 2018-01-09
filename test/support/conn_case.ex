@@ -21,6 +21,8 @@ defmodule SimpleWeb.ConnCase do
       use Phoenix.ConnTest
       import SimpleWeb.Router.Helpers
 
+      import Simple.Factories
+
       # The default endpoint for testing
       @endpoint SimpleWeb.Endpoint
     end

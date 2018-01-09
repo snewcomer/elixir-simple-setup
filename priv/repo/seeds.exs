@@ -4,28 +4,28 @@ alias Simple.Repo
 users = [
   %{
     email: "owner@simple.org",
-    first_name: "Code Corps",
+    first_name: "Simple",
     last_name: "Owner",
     password: "password",
     username: "simple-owner"
   },
   %{
     email: "admin@simple.org",
-    first_name: "Code Corps",
+    first_name: "Simple",
     last_name: "Admin",
     password: "password",
     username: "simple-admin"
   },
   %{
     email: "contributor@simple.org",
-    first_name: "Code Corps",
+    first_name: "Simple",
     last_name: "Contributor",
     password: "password",
     username: "simple-contributor"
   },
   %{
     email: "pending@simple.org",
-    first_name: "Code Corps",
+    first_name: "Simple",
     last_name: "Pending",
     password: "password",
     username: "simple-pending"

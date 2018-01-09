@@ -5,6 +5,7 @@ defmodule SimpleWeb.TokenView do
   def render("show.json", %{token: token, user_id: user_id}) do
     %{
       token: token,
+      refresh_token: token,
       user_id: user_id,
     }
   end
