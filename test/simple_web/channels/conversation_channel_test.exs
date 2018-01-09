@@ -35,19 +35,19 @@ defmodule SimpleWeb.ConversationChannelTest do
       assert response == {:error, %{reason: "unauthorized"}}
     end
 
-    # test "broadcasts new conversation part" do
-    #   %{id: id, user: user} = conversation = insert(:conversation)
+    test "broadcasts new conversation part" do
+      %{id: id, user: user} = conversation = insert(:conversation)
 
-    #   {:ok, %{}, _socket} =
-    #     "test"
-    #     |> socket(%{current_user: user})
-    #     |> subscribe_and_join(ConversationChannel, "conversation:#{id}")
+      {:ok, %{}, _socket} =
+        "test"
+        |> socket(%{current_user: user})
+        |> subscribe_and_join(ConversationChannel, "conversation:#{id}")
 
-    #   %{id: conversation_part_id} = conversation_part =
-    #     insert(:conversation_part, conversation: conversation)
-    #   ConversationChannel.broadcast_new_conversation_part(conversation_part)
+      %{id: conversation_part_id} = conversation_part =
+        insert(:conversation_part, conversation: conversation)
+      ConversationChannel.broadcast_new_conversation_part(conversation_part)
 
-    #   assert_broadcast("new:conversation-part", %{id: ^conversation_part_id})
-    # end
+      assert_broadcast("new:conversation-part", %{id: ^conversation_part_id})
+    end
   end
 end

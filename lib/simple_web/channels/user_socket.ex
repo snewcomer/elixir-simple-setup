@@ -2,7 +2,7 @@ defmodule SimpleWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", SimpleWeb.RoomChannel
+  channel "conversation:*", Simple.ConversationChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket,

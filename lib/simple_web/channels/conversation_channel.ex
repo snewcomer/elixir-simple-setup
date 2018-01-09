@@ -27,7 +27,7 @@ defmodule SimpleWeb.ConversationChannel do
     channel = "conversation:#{conversation_part.conversation_id}"
     event = "new:conversation-part"
     payload = %{
-      author_id: conversation_part.author_id,
+      user_id: conversation_part.user_id,
       id: conversation_part.id
     }
 
