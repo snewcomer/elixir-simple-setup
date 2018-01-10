@@ -8,7 +8,7 @@ defmodule SimpleWeb.UserControllerTest do
   @create_attrs %{email: "some@email.com", first_name: "some first_name", last_name: "some last_name", 
     password: "some password", username: "some username", cloudinary_public_id: "123"}
   @update_attrs %{email: "some@updateemail.com", first_name: "some updated first_name", last_name: "some updated last_name", 
-    username: "some updated username", cloudinary_public_id: "456"}
+    username: "some updated username", cloudinary_public_id: "456", admin: "true"}
   @invalid_attrs %{email: nil, first_name: nil, last_name: nil, username: nil}
 
   def fixture(:user) do
@@ -76,6 +76,8 @@ defmodule SimpleWeb.UserControllerTest do
       assert data["last-name"] == "some updated last_name"
       assert data["username"] == "some updated username"
       assert data["cloudinary-public-id"] == "456"
+      assert data["photo-large-url"]
+      assert data["photo-thumb-url"]
     end
 
     @tag :authenticated

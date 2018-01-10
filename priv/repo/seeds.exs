@@ -7,14 +7,16 @@ users = [
     first_name: "Simple",
     last_name: "Owner",
     password: "password",
-    username: "simple-owner"
+    username: "simple-owner",
+    admin: true
   },
   %{
     email: "admin@simple.org",
     first_name: "Simple",
     last_name: "Admin",
     password: "password",
-    username: "simple-admin"
+    username: "simple-admin",
+    admin: true
   },
   %{
     email: "contributor@simple.org",

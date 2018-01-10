@@ -24,7 +24,8 @@ defmodule SimpleWeb.ConversationPartController do
   def create(%Conn{} = conn, %{} = params) do
     with %User{} = current_user <- conn |> Simple.Guardian.Plug.current_resource,
          {:ok, :authorized} <- current_user |> Policy.authorize(:create, %ConversationPart{}, params),
-         {:ok, %ConversationPart{} = conversation_part} <- Messages.create_conversation_part(params)
+         {:ok, %ConversationPart{} = conversation_part} <- Messages.create_conversation_part(params),
+         conversation_part <- conversation_part |> preload()
     do
       SimpleWeb.ConversationChannel.broadcast_new_conversation_part(conversation_part)
       conn |> put_status(:created) |> render("show.json", %{data: conversation_part})

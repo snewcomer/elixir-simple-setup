@@ -27,7 +27,7 @@ defmodule Simple.Accounts.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:cloudinary_public_id, :username, :password, :email, :first_name, :last_name])
+    |> cast(attrs, [:admin, :cloudinary_public_id, :username, :password, :email, :first_name, :last_name])
     |> validate_required([:username, :email, :first_name, :last_name])
   end
 
