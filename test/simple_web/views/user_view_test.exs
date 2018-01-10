@@ -17,6 +17,7 @@ defmodule SimpleWeb.UserViewTest do
         id: user.id,
         type: "users",
         attributes: %{
+          "cloudinary-public-id" => user.cloudinary_public_id,
           "email" => user.email,
           "first-name" => user.first_name,
           "inserted-at" => user.inserted_at,

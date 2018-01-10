@@ -5,8 +5,10 @@ defmodule SimpleWeb.UserControllerTest do
   alias Simple.Accounts
   alias Simple.Accounts.User
 
-  @create_attrs %{email: "some@email.com", first_name: "some first_name", last_name: "some last_name", password: "some password", username: "some username"}
-  @update_attrs %{email: "some@updateemail.com", first_name: "some updated first_name", last_name: "some updated last_name", username: "some updated username"}
+  @create_attrs %{email: "some@email.com", first_name: "some first_name", last_name: "some last_name", 
+    password: "some password", username: "some username", cloudinary_public_id: "123"}
+  @update_attrs %{email: "some@updateemail.com", first_name: "some updated first_name", last_name: "some updated last_name", 
+    username: "some updated username", cloudinary_public_id: "456"}
   @invalid_attrs %{email: nil, first_name: nil, last_name: nil, username: nil}
 
   def fixture(:user) do
@@ -37,10 +39,12 @@ defmodule SimpleWeb.UserControllerTest do
         |> Map.get("data")
         |> Map.get("attributes")
 
+      assert data["admin"] == nil
       assert data["email"] == "some@email.com"
       assert data["first-name"] == "some first_name"
       assert data["last-name"] == "some last_name"
       assert data["username"] == "some username"
+      assert data["cloudinary-public-id"] == "123"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -71,6 +75,7 @@ defmodule SimpleWeb.UserControllerTest do
       assert data["first-name"] == "some updated first_name"
       assert data["last-name"] == "some updated last_name"
       assert data["username"] == "some updated username"
+      assert data["cloudinary-public-id"] == "456"
     end
 
     @tag :authenticated

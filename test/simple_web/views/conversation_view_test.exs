@@ -53,6 +53,7 @@ defmodule SimpleWeb.ConversationViewTest do
       included: [
         %{
           attributes: %{
+            "cloudinary-public-id" => user.cloudinary_public_id,
             "email" => user.email,
             "first-name" => user.first_name,
             "inserted-at" => user.inserted_at,

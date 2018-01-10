@@ -30,7 +30,7 @@ defmodule SimpleWeb.Plug.DataToAttributesTest do
   test "converts belongs_to specified via identifier map into proper id", %{conn: conn} do
     payload = %{
       "data" => %{
-        "attributes" => %{"foo" => "bar"},
+        "attributes" => %{"foo-bar" => "bar"},
         "relationships" => %{
           "baz" => %{"data" => %{"id" => "2", "type" => "baz"}}
         },
@@ -47,7 +47,7 @@ defmodule SimpleWeb.Plug.DataToAttributesTest do
 
     assert converted_params == %{
       "baz_id" => "2",
-      "foo" => "bar",
+      "foo_bar" => "bar",
       "id" => "1",
       "type" => "resource"
     }

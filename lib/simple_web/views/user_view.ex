@@ -5,7 +5,7 @@ defmodule SimpleWeb.UserView do
   alias Simple.Presenters.ImagePresenter
 
   def fields do
-    [:email, :first_name, :last_name, :username, :photo_large_url, :photo_thumb_url, :inserted_at, :updated_at]
+    [:cloudinary_public_id, :email, :first_name, :last_name, :username, :photo_large_url, :photo_thumb_url, :inserted_at, :updated_at]
   end
 
   def photo_large_url(user, _conn), do: ImagePresenter.large(user)

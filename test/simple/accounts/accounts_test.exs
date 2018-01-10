@@ -6,8 +6,10 @@ defmodule Simple.AccountsTest do
   describe "users" do
     alias Simple.Accounts.User
 
-    @valid_attrs %{email: "some email", first_name: "some first_name", last_name: "some last_name", password: "some password", username: "some username"}
-    @update_attrs %{email: "some updated email", first_name: "some updated first_name", last_name: "some updated last_name", username: "some updated username"}
+    @valid_attrs %{email: "some email", first_name: "some first_name", last_name: "some last_name", 
+      password: "some password", username: "some username"}
+    @update_attrs %{email: "some updated email", first_name: "some updated first_name", last_name: "some updated last_name", 
+      username: "some updated username", cloudinary_public_id: "123"}
     @invalid_attrs %{email: nil, first_name: nil, last_name: nil, password: nil, username: nil}
 
     def user_fixture(attrs \\ %{}) do
@@ -35,11 +37,14 @@ defmodule Simple.AccountsTest do
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
+      assert user.admin == nil
       assert user.email == "some email"
       assert user.first_name == "some first_name"
       assert user.last_name == "some last_name"
       assert user.encrypted_password
       assert user.username == "some username"
+      assert user.default_color == "blue"
+      assert user.cloudinary_public_id == nil
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -54,6 +59,7 @@ defmodule Simple.AccountsTest do
       assert user.first_name == "some updated first_name"
       assert user.last_name == "some updated last_name"
       assert user.username == "some updated username"
+      assert user.cloudinary_public_id == "123"
     end
 
     test "update_user/2 with invalid data returns error changeset" do

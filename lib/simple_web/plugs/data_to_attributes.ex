@@ -3,8 +3,6 @@ defmodule SimpleWeb.Plug.DataToAttributes do
   Converts params in the JSON api format into flat params convient for
   changeset casting.
 
-  For base parameters, this is done using `JaSerializer.Params.to_attributes/1`
-
   For included records, this is done using custom code.
   """
 
@@ -54,7 +52,7 @@ defmodule SimpleWeb.Plug.DataToAttributes do
   defp to_attributes(data) do
     data
     |> parse_relationships
-    |> Map.merge(data["attributes"] || %{})
+    |> Map.merge(parse(data["attributes"]) || %{})
     |> Map.put_new("id", data["id"])
     |> Map.put_new("type", data["type"])
   end
@@ -72,4 +70,17 @@ defmodule SimpleWeb.Plug.DataToAttributes do
   defp parse_relationships(_) do
     %{}
   end
+
+  def parse(map) do
+    Enum.reduce map, %{}, fn({key, val}, int_map) ->
+      key = format_key(key)
+      Map.put(int_map, key, val)
+    end
+  end
+
+  def format_key(key) do
+    dash_to_underscore(key)
+  end
+
+  defp dash_to_underscore(key), do: String.replace(key, "-", "_")
 end
