@@ -1,14 +1,12 @@
 defmodule Simple.Accounts.User do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Simple.Model
+
   import Simple.Helpers.RandomIconColor
   alias Simple.Accounts.User
   alias Comeonin.Bcrypt
   alias Ecto.Changeset
 
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
   schema "users" do
     field :admin, :boolean
     field :cloudinary_public_id

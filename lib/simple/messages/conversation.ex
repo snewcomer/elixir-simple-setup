@@ -1,12 +1,9 @@
 defmodule Simple.Messages.Conversation do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Simple.Model
+
   alias Simple.Messages.{Conversation, ConversationPart}
   alias Simple.Accounts.{User}
 
-
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
   schema "conversations" do
     field :body, :string
     field :is_locked, :boolean, default: false

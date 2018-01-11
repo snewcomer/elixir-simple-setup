@@ -4,7 +4,6 @@ defmodule SimpleWeb.UserViewTest do
   alias SimpleWeb.UserView
   alias Plug.Conn
 
-  @tag :wip
   test "renders all attributes and relationships properly" do
     user = insert(:user, first_name: "First", last_name: "Last", default_color: "blue")
 
