@@ -28,6 +28,17 @@ defmodule SimpleWeb.TokenControllerTest do
       assert response["user_id"] == user_id
     end
 
+    test "authenticates and returns JWT and user ID when email provided is valid", %{conn: conn} do
+      _user_other = insert(:user, username: "watfoo", email: "wat@gmail.com")
+      user = build(:user, %{username: "watfoo", email: "foo@gmail.com", password: "password"}) |> set_password("password") |> insert
+      conn = post conn, token_path(conn, :create), create_payload(user.email, user.password)
+
+      user_id = user.id
+      response = json_response(conn, 201)
+      assert response["token"]
+      assert response["user_id"] == user_id
+    end
+
     test "does not authenticate and renders errors when the username and password are missing", %{conn: conn} do
       conn = post conn, token_path(conn, :create), %{"username" => ""}
 

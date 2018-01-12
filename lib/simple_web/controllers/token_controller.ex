@@ -2,7 +2,7 @@ defmodule SimpleWeb.TokenController do
   @moduledoc false
   use SimpleWeb, :controller
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
-  alias Simple.Repo
+  import Simple.Helpers.Query, only: [login_filter: 2]
   alias Simple.Accounts.User
 
   def create(conn, params = %{"username" => _, "password" => _}) do
@@ -45,7 +45,7 @@ defmodule SimpleWeb.TokenController do
   end
 
   defp login_by_username_and_pass(%{"username" => username, "password" => password}) do
-    user = Repo.get_by(User, username: username)
+    user = User |> login_filter(username)
     cond do
       user && checkpw(password, user.encrypted_password) ->
         {:ok, user}

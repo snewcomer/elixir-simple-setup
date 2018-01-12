@@ -1,6 +1,8 @@
 defmodule Simple.Helpers.Query do
   import Ecto.Query, only: [where: 3, order_by: 2]
 
+  alias Simple.Repo
+
   @spec id_filter(Ecto.Queryable.t, map | String.t) :: Ecto.Queryable.t
   def id_filter(query, %{"filter" => %{"id" => id_csv}}) do
     query |> id_filter(id_csv)
@@ -11,6 +13,14 @@ defmodule Simple.Helpers.Query do
   end
 
   # user queries
+
+  def login_filter(query, username_or_email) do
+    query
+    |> where([object], 
+      object.username == ^username_or_email or
+      object.email == ^username_or_email)
+    |> Repo.one
+  end
 
   def user_filter(query, %{"query" => query_string}) do
     query
@@ -28,13 +38,14 @@ defmodule Simple.Helpers.Query do
   # sorting
 
   def sort_by_inserted_at(query), do: query |> order_by([asc: :inserted_at])
+  def sort_by_inserted_at_desc(query), do: query |> order_by([desc: :inserted_at])
 
   # end sorting
 
   # finders
 
   def slug_finder(query, slug) do
-    query |> Simple.Repo.get_by(slug: slug |> String.downcase)
+    query |> Repo.get_by(slug: slug |> String.downcase)
   end
 
   # end finders

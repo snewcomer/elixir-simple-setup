@@ -6,7 +6,7 @@ defmodule Simple.Messages do
   import Ecto.Query, warn: false
   alias Simple.Repo
 
-  import Simple.Helpers.Query, only: [sort_by_inserted_at: 1]
+  import Simple.Helpers.Query, only: [sort_by_inserted_at: 1, sort_by_inserted_at_desc: 1]
 
   alias Simple.Messages.{Conversation, ConversationQuery}
 
@@ -24,6 +24,7 @@ defmodule Simple.Messages do
     query
     |> ConversationQuery.status_filter(params)
     |> ConversationQuery.conversation_filter(params)
+    |> sort_by_inserted_at_desc()
     |> Repo.all()
   end
 

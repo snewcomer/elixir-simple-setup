@@ -6,7 +6,6 @@ defmodule Simple.Accounts.User do
   alias Comeonin.Bcrypt
   alias Ecto.Changeset
 
-
   schema "users" do
     field :admin, :boolean
     field :cloudinary_public_id
