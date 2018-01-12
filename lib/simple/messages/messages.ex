@@ -23,6 +23,7 @@ defmodule Simple.Messages do
   def list_conversations(query, params \\ %{}) do
     query
     |> ConversationQuery.status_filter(params)
+    |> ConversationQuery.conversation_filter(params)
     |> Repo.all()
   end
 

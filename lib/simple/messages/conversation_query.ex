@@ -18,6 +18,16 @@ defmodule Simple.Messages.ConversationQuery do
   end
   def user_filter(queryable, %{}), do: queryable
 
+  def conversation_filter(query, %{"query" => query_string}) do
+    query
+    |> where(
+      [object],
+      ilike(object.title, ^"%#{query_string}%") or
+      ilike(object.body, ^"%#{query_string}%")
+    )
+  end
+  def conversation_filter(query, _), do: query
+
 
   # @doc ~S"""
   # Filters `Simple.Conversation` record queries to return only those

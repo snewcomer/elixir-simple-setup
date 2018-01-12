@@ -30,6 +30,29 @@ defmodule SimpleWeb.ConversationControllerTest do
     end
 
     @tag authenticated: :admin
+    test "lists all entries by query title", %{conn: conn} do
+      insert_pair(:conversation, title: "foo")
+      conversation_other = insert(:conversation, title: "wat")
+
+      conn
+      |> get("conversations?query=wat")
+      |> json_response(200)
+      |> assert_ids_from_response([conversation_other.id])
+    end
+
+    @tag authenticated: :admin
+    test "lists all entries by query body", %{conn: conn} do
+      insert_pair(:conversation, body: "foo")
+      conversation_other = insert(:conversation, body: "wat")
+      conversation_another = insert(:conversation, title: "wat")
+
+      conn
+      |> get("conversations?query=wat")
+      |> json_response(200)
+      |> assert_ids_from_response([conversation_other.id, conversation_another.id])
+    end
+
+    @tag authenticated: :admin
     test "lists all entries by status", %{conn: conn} do
       insert_pair(:conversation, status: "closed")
       user = insert(:user)
