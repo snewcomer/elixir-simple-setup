@@ -49,6 +49,14 @@ defmodule Simple.Accounts.User do
     |> generate_icon_color(:default_color)
   end
 
+  @doc false
+  def reset_password_changeset(struct, params) do
+    struct
+    |> cast(params, [:password, :password_confirmation])
+    |> validate_confirmation(:password, message: "passwords do not match")
+    |> put_pass_hash
+  end
+
   defp put_pass_hash(changeset) do
     case changeset do
       %Changeset{valid?: true, changes: %{password: pass}} ->

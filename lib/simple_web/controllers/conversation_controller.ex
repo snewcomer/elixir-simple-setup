@@ -19,7 +19,8 @@ defmodule SimpleWeb.ConversationController do
   @spec create(Conn.t, map) :: Conn.t
   def create(conn, params) do
     with %User{} = _current_user <- conn |> Simple.Guardian.Plug.current_resource,
-         {:ok, %Conversation{} = conversation} <- Messages.create_conversation(params)
+         {:ok, %Conversation{} = conversation} <- Messages.create_conversation(params),
+         conversation <- conversation |> preload()
       do
         conn
         |> put_status(:created)

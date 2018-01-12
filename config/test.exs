@@ -20,11 +20,14 @@ config :simple, Simple.Repo,
 
 config :simple, allowed_origins: ["http://localhost:4200"]
 
+config :simple, site_url: "http://localhost:4200"
+
 config :simple, Simple.Guardian,
   secret_key: "e62fb6e2746f6b1bf8b5b735ba816c2eae1d5d76e64f18f3fc647e308b0c159e"
 
 config :simple, 
-  postmark_early_access_template: "123"
+  postmark_forgot_password_template: "123",
+  postmark_reply_to_conversation_template: "123"
 
 config :simple, Simple.Mailer,
   adapter: Bamboo.TestAdapter

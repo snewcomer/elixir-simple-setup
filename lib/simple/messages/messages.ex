@@ -6,6 +6,8 @@ defmodule Simple.Messages do
   import Ecto.Query, warn: false
   alias Simple.Repo
 
+  import Simple.Helpers.Query, only: [sort_by_inserted_at: 1]
+
   alias Simple.Messages.{Conversation, ConversationQuery}
 
   @doc """
@@ -117,7 +119,7 @@ defmodule Simple.Messages do
 
   """
   def list_conversation_parts(query) do
-    query |> Repo.all()
+    query |> sort_by_inserted_at() |> Repo.all()
   end
 
   @doc """

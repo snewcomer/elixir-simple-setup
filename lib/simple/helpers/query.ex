@@ -27,7 +27,7 @@ defmodule Simple.Helpers.Query do
 
   # sorting
 
-  def sort_by_order(query), do: query |> order_by([asc: :order])
+  def sort_by_inserted_at(query), do: query |> order_by([asc: :inserted_at])
 
   # end sorting
 

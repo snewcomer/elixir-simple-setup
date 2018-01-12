@@ -18,7 +18,6 @@ defmodule SimpleWeb.TokenControllerTest do
   end
 
   describe "create" do
-    @tag :wip
     test "authenticates and returns JWT and user ID when data is valid", %{conn: conn} do
       user = build(:user, %{password: "password"}) |> set_password("password") |> insert
       conn = post conn, token_path(conn, :create), create_payload(user.username, user.password)

@@ -5,6 +5,6 @@ defmodule Simple.Emails.BaseEmail do
 
   def create do
     new_email()
-    |> from("Simple<team@simple.com>")
+    |> from("Simple <team@simple.org>")
   end
 end

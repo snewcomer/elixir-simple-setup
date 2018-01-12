@@ -26,7 +26,6 @@ defmodule SimpleWeb.Plug.DataToAttributesTest do
     }
   end
 
-  @tag :wip
   test "converts belongs_to specified via identifier map into proper id", %{conn: conn} do
     payload = %{
       "data" => %{

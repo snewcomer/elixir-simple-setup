@@ -42,6 +42,8 @@ config :cloudex,
 # Configures random icon color generator
 config :simple, :icon_color_generator, Simple.Helpers.Generator
 
+config :simple, password_reset_timeout: 3600
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

@@ -34,7 +34,7 @@ defmodule Simple.Factories do
     }
   end
 
-  @spec set_password(CodeCorps.User.t, String.t) :: CodeCorps.User.t
+  @spec set_password(Simple.Accounts.User.t, String.t) :: Simple.Accounts.User.t
   def set_password(user, password) do
     hashed_password = Comeonin.Bcrypt.hashpwsalt(password)
     %{user | encrypted_password: hashed_password}

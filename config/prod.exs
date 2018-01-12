@@ -84,8 +84,8 @@ config :simple, Simple.Mailer,
   api_key: System.get_env("POSTMARK_API_KEY")
 
 config :simple,
-  postmark_early_access_template: "randonum",
-  postmark_early_access_response_template: "randonum"
+  postmark_forgot_password_template: "1989483",
+  postmark_reply_to_conversation_template: "4324082"
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
