@@ -13,6 +13,7 @@ defmodule Simple.Repo.Migrations.CreateUsers do
       add :email, :string
       add :first_name, :string
       add :last_name, :string
+      add :ph_number, :string
 
       timestamps()
     end

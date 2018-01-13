@@ -39,6 +39,11 @@ config :cloudex,
   secret: System.get_env("CLOUDEX_SECRET"),
   cloud_name: System.get_env("CLOUDEX_CLOUD_NAME")
 
+config :ex_twilio, 
+  account_sid:   System.get_env("TWILIO_ACCOUNT_SID"),
+  auth_token:    System.get_env("TWILIO_AUTH_TOKEN"),
+  workspace_sid: System.get_env("TWILIO_WORKSPACE_SID") # optional
+
 # Configures random icon color generator
 config :simple, :icon_color_generator, Simple.Helpers.Generator
 

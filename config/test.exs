@@ -29,6 +29,11 @@ config :simple,
   postmark_forgot_password_template: "123",
   postmark_reply_to_conversation_template: "123"
 
+config :ex_twilio, 
+  account_sid:   System.get_env("TWILIO_ACCOUNT_TEST_SID"),
+  auth_token:    System.get_env("TWILIO_TEST_AUTH_TOKEN"),
+  workspace_sid: System.get_env("TWILIO_WORKSPACE_SID") # optional
+
 config :simple, Simple.Mailer,
   adapter: Bamboo.TestAdapter
 

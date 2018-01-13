@@ -55,7 +55,8 @@ defmodule Simple.Mixfile do
       {:cowboy, "~> 1.0"},
       {:timex, "~> 3.0"},
       {:timex_ecto, "~> 3.0"},
-      {:quantum, ">= 2.2.1"}
+      {:quantum, ">= 2.2.1"},
+      {:ex_twilio, "~> 0.5.0"}
     ]
   end
 
