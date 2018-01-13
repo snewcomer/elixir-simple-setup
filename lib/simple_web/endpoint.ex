@@ -42,6 +42,9 @@ defmodule SimpleWeb.Endpoint do
     log: Application.get_env(:simple, :corsica_log_level)
   ]
 
+  import SimpleWeb.RateLimit
+  plug :rate_limit
+
   plug SimpleWeb.Router
 
   @doc """

@@ -7,6 +7,9 @@ defmodule SimpleWeb.UserController do
 
   plug SimpleWeb.Plug.DataToAttributes
 
+  import SimpleWeb.RateLimit
+  plug :rate_limit_authentication
+
   action_fallback SimpleWeb.FallbackController
 
   def index(conn, _params) do

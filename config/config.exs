@@ -43,6 +43,8 @@ config :cloudex,
 config :simple, :icon_color_generator, Simple.Helpers.Generator
 
 config :simple, password_reset_timeout: 3600
+config :simple, max_requests: 10
+config :simple, interval_milliseconds: 60 * 1000
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

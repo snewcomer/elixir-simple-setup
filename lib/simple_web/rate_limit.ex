@@ -9,9 +9,15 @@ defmodule SimpleWeb.RateLimit do
     end
   end
 
+  def rate_limit_authentication(conn, options \\ []) do
+    name = conn.params["username"] || conn.params["email"] || "random@gmail.com"
+    options = Keyword.merge(options, [bucket_name: "authorization:" <> name])
+    __MODULE__.rate_limit(conn, options)
+  end
+
   defp check_rate(conn, options) do
-    interval_milliseconds = options[:interval_seconds] * 1000
-    max_requests = options[:max_requests]
+    interval_milliseconds = Application.get_env(:simple, :interval_milliseconds)
+    max_requests = Application.get_env(:simple, :max_requests)
     bucket_name = options[:bucket_name] || bucket_name(conn)
 
     ExRated.check_rate(bucket_name, interval_milliseconds, max_requests)
