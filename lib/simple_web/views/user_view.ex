@@ -11,4 +11,9 @@ defmodule SimpleWeb.UserView do
   def photo_large_url(user, _conn), do: ImagePresenter.large(user)
 
   def photo_thumb_url(user, _conn), do: ImagePresenter.thumbnail(user)
+
+  def email(user, %Plug.Conn{assigns: %{current_user: current_user}}) do
+    if user.id == current_user.id, do: user.email, else: ""
+  end
+  def email(_user, _conn), do: ""
 end

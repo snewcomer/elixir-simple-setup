@@ -54,7 +54,8 @@ defmodule Simple.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:timex, "~> 3.0"},
-      {:timex_ecto, "~> 3.0"}
+      {:timex_ecto, "~> 3.0"},
+      {:quantum, ">= 2.2.1"}
     ]
   end
 

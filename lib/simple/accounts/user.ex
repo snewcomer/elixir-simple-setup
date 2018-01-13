@@ -25,7 +25,8 @@ defmodule Simple.Accounts.User do
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:admin, :cloudinary_public_id, :username, :password, :email, :first_name, :last_name])
+    |> cast(attrs, [:cloudinary_public_id, :username, :password, :email, 
+      :first_name, :last_name, :guest])
     |> validate_required([:username, :email])
     |> validate_length(:username, min: 1, max: 39)
   end
@@ -43,6 +44,7 @@ defmodule Simple.Accounts.User do
     |> validate_required([:password])
     |> validate_length(:password, min: 6)
     |> put_pass_hash()
+    |> put_change(:guest, false)
   end
 
   @doc false

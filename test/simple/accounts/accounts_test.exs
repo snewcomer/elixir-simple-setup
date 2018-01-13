@@ -2,6 +2,7 @@ defmodule Simple.AccountsTest do
   use Simple.DataCase
 
   alias Simple.Accounts
+  import Simple.Factories
 
   describe "users" do
     alias Simple.Accounts.User
@@ -84,6 +85,7 @@ defmodule Simple.AccountsTest do
       assert {:ok, user} = Accounts.update_guest_user(user, @update_guest_attrs)
       assert %User{} = user
       assert user.admin == nil
+      assert user.guest == false
       assert user.email == "some_guest@email.com"
       assert user.first_name == "some first_name"
       assert user.last_name == "some last_name"
@@ -112,6 +114,19 @@ defmodule Simple.AccountsTest do
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
+    end
+  end
+
+  describe "scheduler" do
+    test "remove guest users if older than 3 days" do
+      user_admin = insert(:user, updated_at: Timex.now() |> Timex.shift(days: -10), admin: true, guest: false)
+      user = insert(:user, updated_at: Timex.now() |> Timex.shift(days: -2), guest: true)
+      _user_2 = insert(:user, updated_at: Timex.now() |> Timex.shift(days: -5), guest: true)
+      Simple.Accounts.RemoveOldGuests.check_guest_users()
+      users = Repo.all(Accounts.User)
+      assert Enum.count(users) == 2
+      assert Enum.at(users, 0) |> Map.get(:id) == user_admin.id
+      assert Enum.at(users, 1) |> Map.get(:id) == user.id
     end
   end
 end

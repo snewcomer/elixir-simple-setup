@@ -43,7 +43,7 @@ defmodule SimpleWeb.UserControllerTest do
         |> Map.get("attributes")
 
       assert data["admin"] == nil
-      assert data["email"] == "some@email.com"
+      assert data["email"] == ""
       assert data["first-name"] == "some first_name"
       assert data["last-name"] == "some last_name"
       assert data["username"] == "some username"
@@ -97,7 +97,6 @@ defmodule SimpleWeb.UserControllerTest do
       assert data["photo-thumb-url"]
     end
 
-    @tag :wip
     @tag :authenticated
     test "renders user when guest data is valid", %{conn: conn, current_user: %User{id: _id} = user} do
       path = conn |> user_path(:update, user.id)

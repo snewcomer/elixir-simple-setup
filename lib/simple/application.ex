@@ -13,7 +13,7 @@ defmodule Simple.Application do
       # Start the endpoint when the application starts
       supervisor(SimpleWeb.Endpoint, []),
       # Start your own worker by calling: Simple.Worker.start_link(arg1, arg2, arg3)
-      # worker(Simple.Worker, [arg1, arg2, arg3]),
+      worker(Simple.Accounts.RemoveOldGuests, []),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
