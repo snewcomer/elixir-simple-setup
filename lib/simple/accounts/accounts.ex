@@ -56,6 +56,24 @@ defmodule Simple.Accounts do
   end
 
   @doc """
+  Creates a guest user.
+
+  ## Examples
+
+      iex> create_guest_user(%{field: value})
+      {:ok, %User{}}
+
+      iex> create_guest_user(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_guest_user(attrs \\ %{}) do
+    %User{}
+    |> User.create_guest_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
   Updates a user.
 
   ## Examples
@@ -70,6 +88,24 @@ defmodule Simple.Accounts do
   def update_user(%User{} = user, attrs) do
     user
     |> User.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates a guest user.
+
+  ## Examples
+
+      iex> update_guest_user(user, %{field: new_value})
+      {:ok, %User{}}
+
+      iex> update_guest_user(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_guest_user(%User{} = user, attrs) do
+    user
+    |> User.update_guest_changeset(attrs)
     |> Repo.update()
   end
 

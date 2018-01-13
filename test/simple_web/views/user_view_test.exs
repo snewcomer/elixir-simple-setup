@@ -19,6 +19,7 @@ defmodule SimpleWeb.UserViewTest do
           "cloudinary-public-id" => user.cloudinary_public_id,
           "email" => user.email,
           "first-name" => user.first_name,
+          "guest" => user.guest,
           "inserted-at" => user.inserted_at,
           "last-name" => user.last_name,
           "photo-large-url" => "#{host}/icons/user_default_large_blue.png",

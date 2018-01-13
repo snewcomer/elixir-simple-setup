@@ -7,6 +7,9 @@ defmodule SimpleWeb.UserControllerTest do
 
   @create_attrs %{email: "some@email.com", first_name: "some first_name", last_name: "some last_name", 
     password: "some password", username: "some username", cloudinary_public_id: "123"}
+  @guest_attrs %{username: "some username", guest: true}
+  @update_guest_attrs %{email: "some_guest@email.com", first_name: "some first_name", last_name: "some last_name",
+    password: "some password", username: "some username", cloudinary_public_id: "123", guest: true}
   @update_attrs %{email: "some@updateemail.com", first_name: "some updated first_name", last_name: "some updated last_name", 
     username: "some updated username", cloudinary_public_id: "456", admin: "true"}
   @invalid_attrs %{email: nil, first_name: nil, last_name: nil, username: nil}
@@ -47,6 +50,20 @@ defmodule SimpleWeb.UserControllerTest do
       assert data["cloudinary-public-id"] == "123"
     end
 
+    test "renders guest user when data is valid", %{conn: conn} do
+      path = conn |> user_path(:create)
+
+      data = 
+        conn
+        |> post(path <> "?guest=true", @guest_attrs)
+        |> json_response(201)
+        |> Map.get("data")
+        |> Map.get("attributes")
+
+      assert data["username"] == "some username"
+      assert data["guest"] == true
+    end
+
     test "renders errors when data is invalid", %{conn: conn} do
       conn
       |> request_create(@invalid_attrs)
@@ -76,6 +93,28 @@ defmodule SimpleWeb.UserControllerTest do
       assert data["last-name"] == "some updated last_name"
       assert data["username"] == "some updated username"
       assert data["cloudinary-public-id"] == "456"
+      assert data["photo-large-url"]
+      assert data["photo-thumb-url"]
+    end
+
+    @tag :wip
+    @tag :authenticated
+    test "renders user when guest data is valid", %{conn: conn, current_user: %User{id: _id} = user} do
+      path = conn |> user_path(:update, user.id)
+
+      data = 
+        conn
+        |> put(path <> "?guest=true", @update_guest_attrs)
+        |> json_response(200)
+        |> Map.get("data")
+        |> Map.get("attributes")
+
+      assert data["admin"] == nil
+      assert data["email"] == "some_guest@email.com"
+      assert data["first-name"] == "some first_name"
+      assert data["last-name"] == "some last_name"
+      assert data["username"] == "some username"
+      assert data["cloudinary-public-id"] == "123"
       assert data["photo-large-url"]
       assert data["photo-thumb-url"]
     end

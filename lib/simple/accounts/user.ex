@@ -13,6 +13,7 @@ defmodule Simple.Accounts.User do
     field :email, :string
     field :encrypted_password, :string
     field :first_name, :string
+    field :guest, :boolean
     field :last_name, :string
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
@@ -26,6 +27,7 @@ defmodule Simple.Accounts.User do
     user
     |> cast(attrs, [:admin, :cloudinary_public_id, :username, :password, :email, :first_name, :last_name])
     |> validate_required([:username, :email])
+    |> validate_length(:username, min: 1, max: 39)
   end
 
   @doc false
@@ -35,15 +37,32 @@ defmodule Simple.Accounts.User do
   end
 
   @doc false
+  def update_guest_changeset(%User{} = user, attrs) do
+    user
+    |> changeset(attrs)
+    |> validate_required([:password])
+    |> validate_length(:password, min: 6)
+    |> put_pass_hash()
+  end
+
+  @doc false
   def create_changeset(%User{} = user, attrs) do
     user
     |> changeset(attrs)
     |> cast(attrs, [:default_color])
     |> validate_required([:password])
     |> validate_length(:password, min: 6)
-    |> validate_length(:username, min: 1, max: 39)
     |> unique_constraint(:email)
     |> put_pass_hash()
+    |> generate_icon_color(:default_color)
+  end
+
+  @doc false
+  def create_guest_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:default_color, :guest, :username])
+    |> validate_required([:username])
+    |> validate_length(:username, min: 1, max: 39)
     |> generate_icon_color(:default_color)
   end
 

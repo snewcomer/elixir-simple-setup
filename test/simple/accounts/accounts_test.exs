@@ -6,9 +6,12 @@ defmodule Simple.AccountsTest do
   describe "users" do
     alias Simple.Accounts.User
 
-    @valid_attrs %{email: "some email", first_name: "some first_name", last_name: "some last_name", 
+    @valid_attrs %{email: "some@email.com", first_name: "some first_name", last_name: "some last_name", 
       password: "some password", username: "some username"}
-    @update_attrs %{email: "some updated email", first_name: "some updated first_name", last_name: "some updated last_name", 
+    @guest_attrs %{username: "some username", guest: true}
+    @update_guest_attrs %{email: "some_guest@email.com", first_name: "some first_name", last_name: "some last_name", 
+      password: "some password", username: "some username"}
+    @update_attrs %{email: "some_update@email.com", first_name: "some updated first_name", last_name: "some updated last_name", 
       username: "some updated username", cloudinary_public_id: "123"}
     @invalid_attrs %{email: nil, first_name: nil, last_name: nil, password: nil, username: nil}
 
@@ -38,7 +41,7 @@ defmodule Simple.AccountsTest do
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
       assert user.admin == nil
-      assert user.email == "some email"
+      assert user.email == "some@email.com"
       assert user.first_name == "some first_name"
       assert user.last_name == "some last_name"
       assert user.encrypted_password
@@ -47,24 +50,57 @@ defmodule Simple.AccountsTest do
       assert user.cloudinary_public_id == nil
     end
 
+    test "create_guest_user/1 with valid data creates a user" do
+      assert {:ok, %User{} = user} = Accounts.create_guest_user(@guest_attrs)
+      refute user.encrypted_password
+      refute user.email
+      refute user.first_name
+      refute user.last_name
+      assert user.username == "some username"
+      assert user.default_color == "blue"
+    end
+
     test "create_user/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
+    end
+
+    test "create_guest_user/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_guest_user(@invalid_attrs)
     end
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
       assert {:ok, user} = Accounts.update_user(user, @update_attrs)
       assert %User{} = user
-      assert user.email == "some updated email"
+      assert user.email == "some_update@email.com"
       assert user.first_name == "some updated first_name"
       assert user.last_name == "some updated last_name"
       assert user.username == "some updated username"
       assert user.cloudinary_public_id == "123"
     end
 
+    test "update_guest_user/2 with valid data updates the user" do
+      user = user_fixture()
+      assert {:ok, user} = Accounts.update_guest_user(user, @update_guest_attrs)
+      assert %User{} = user
+      assert user.admin == nil
+      assert user.email == "some_guest@email.com"
+      assert user.first_name == "some first_name"
+      assert user.last_name == "some last_name"
+      assert user.encrypted_password
+      assert user.username == "some username"
+      assert user.default_color == "blue"
+      assert user.cloudinary_public_id == nil
+    end
+
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
+    end
+
+    test "update_guest_user/2 with invalid data returns error changeset" do
+      user = user_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_guest_user(user, @invalid_attrs)
     end
 
     test "delete_user/1 deletes the user" do

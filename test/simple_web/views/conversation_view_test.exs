@@ -5,6 +5,7 @@ defmodule SimpleWeb.ConversationViewTest do
 
   alias Simple.Repo
 
+  @tag :wip
   test "renders all attributes and relationships properly" do
     user = insert(:user, default_color: "blue")
     conversation = insert(:conversation, user: user)
@@ -56,6 +57,24 @@ defmodule SimpleWeb.ConversationViewTest do
             "cloudinary-public-id" => user.cloudinary_public_id,
             "email" => user.email,
             "first-name" => user.first_name,
+            "guest" => user.guest,
+            "inserted-at" => user.inserted_at,
+            "last-name" => user.last_name,
+            "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
+            "photo-thumb-url" => "#{host}/icons/user_default_thumb_blue.png",
+            "username" => user.username,
+            "updated-at" => user.updated_at
+          },
+          id: user.id,
+          type: "users",
+          relationships: %{}
+        },
+        %{
+          attributes: %{
+            "cloudinary-public-id" => user.cloudinary_public_id,
+            "email" => user.email,
+            "first-name" => user.first_name,
+            "guest" => false,#user.guest,
             "inserted-at" => user.inserted_at,
             "last-name" => user.last_name,
             "photo-large-url" => "#{host}/icons/user_default_large_blue.png",

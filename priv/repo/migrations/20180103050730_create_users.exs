@@ -7,6 +7,7 @@ defmodule Simple.Repo.Migrations.CreateUsers do
       add :admin, :boolean, null: false, default: false
       add :cloudinary_public_id, :string
       add :default_color, :string
+      add :guest, :boolean, null: false, default: false
       add :username, :string
       add :encrypted_password, :string
       add :email, :string
