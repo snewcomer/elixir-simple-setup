@@ -6,9 +6,10 @@ defmodule SimpleWeb.ConversationViewTest do
   alias Simple.Repo
 
   test "renders all attributes and relationships properly" do
-    conversation = build(:conversation_with_parts)
+    conversation = build(:conversation_with_parts, participants: [build(:user)])
     user = conversation.user
     conversation_part = conversation.conversation_parts |> Enum.at(0)
+    participant = conversation.participants |> Enum.at(0)
     part_user = conversation_part.user
 
     rendered_json =
@@ -49,6 +50,14 @@ defmodule SimpleWeb.ConversationViewTest do
               id: conversation.user.id,
               type: "users"
             }
+          },
+          "participants" => %{
+            :data => [
+              %{
+                id: participant.id,
+                type: "users"
+              }
+            ]
           }
         },
       },
@@ -106,8 +115,26 @@ defmodule SimpleWeb.ConversationViewTest do
               }
             }
           }
+        },
+        %{
+          attributes: %{
+            "cloudinary-public-id" => participant.cloudinary_public_id,
+            "description" => participant.description,
+            "email" => "",
+            "first-name" => participant.first_name,
+            "guest" => participant.guest,
+            "inserted-at" => participant.inserted_at,
+            "last-name" => participant.last_name,
+            "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
+            "photo-thumb-url" => "#{host}/icons/user_default_thumb_blue.png",
+            "username" => participant.username,
+            "updated-at" => participant.updated_at
+          },
+          id: participant.id,
+          type: "users",
+          relationships: %{}
         }
-    ]
+      ]
     }
 
     assert rendered_json == expected_json

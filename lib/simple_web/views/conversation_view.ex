@@ -8,6 +8,7 @@ defmodule SimpleWeb.ConversationView do
   end
 
   def relationships do
-    [user: {SimpleWeb.UserView, :include}, conversation_parts: {SimpleWeb.ConversationPartView, :include}]
+    [user: {SimpleWeb.UserView, :include}, conversation_parts: {SimpleWeb.ConversationPartView, :include},
+      participants: {SimpleWeb.UserView, :include}]
   end
 end

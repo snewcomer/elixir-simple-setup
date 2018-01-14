@@ -7,16 +7,14 @@ defmodule SimpleWeb.ConversationControllerTest do
   describe "index" do
     @tag :authenticated
     test "lists all entries user is authorized to view", %{conn: conn, current_user: user} do
-      _conversation = insert(:conversation)
+      _conversation = insert(:conversation, participants: [build(:user)])
       conversation_by_user = insert(:conversation, user: user)
       _other_conversation = insert(:conversation)
 
       conn
       |> request_index
       |> json_response(200)
-      |> assert_ids_from_response([
-        conversation_by_user.id
-      ])
+      |> assert_ids_from_response([conversation_by_user.id])
     end
 
     @tag authenticated: :admin

@@ -22,7 +22,7 @@ defmodule Simple.Messages.Conversation do
     field :title, :string
 
     belongs_to :user, User
-    many_to_many :participants, User, join_through: Simple.Messages.ConversationParticipants
+    many_to_many :participants, User, join_through: "conversation_participants"
 
     has_many :conversation_parts, ConversationPart
 
@@ -35,6 +35,7 @@ defmodule Simple.Messages.Conversation do
     |> cast(attrs, [:body, :title, :is_locked, :notified, :receive_notifications, :read_at, :user_id])
     |> validate_required([:body, :title, :user_id])
     |> assoc_constraint(:user)
+    |> cast_assoc(:participants)
   end
 
   @doc false

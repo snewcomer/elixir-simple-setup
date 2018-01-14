@@ -60,7 +60,7 @@ defmodule SimpleWeb.ConversationController do
     end
   end
 
-  @preloads [:user, conversation_parts: [:user]]
+  @preloads [:user, :participants, conversation_parts: [:user]]
 
   def preload(data) do
     Repo.preload(data, @preloads)
