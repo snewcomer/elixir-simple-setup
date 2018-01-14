@@ -1,4 +1,9 @@
 defmodule Simple.Accounts.User do
+  @moduledoc """
+  A user may be a guest user or actual user.  Guest users are cleared out every so often
+
+  A user may be an author on a conversation or participant
+  """
   use Simple.Model
 
   import Simple.Helpers.RandomIconColor
@@ -20,6 +25,8 @@ defmodule Simple.Accounts.User do
     field :password_confirmation, :string, virtual: true
     field :ph_number, :string
     field :username, :string
+
+    has_many :conversations, Simple.Messages.Conversation
 
     timestamps()
   end

@@ -2,6 +2,7 @@ defmodule Simple.Messages.Conversation do
   @moduledoc """
   The user may be a guest user or user registered with the system.
   The user is the one who generated the conversation
+  A conversation can have many users, but only one author
 
   The recipients are defined as thos who were "invited in" to the conversation.
   """
@@ -21,6 +22,8 @@ defmodule Simple.Messages.Conversation do
     field :title, :string
 
     belongs_to :user, User
+    many_to_many :participants, User, join_through: Simple.Messages.ConversationParticipants
+
     has_many :conversation_parts, ConversationPart
 
     timestamps()
