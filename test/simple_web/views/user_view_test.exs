@@ -6,7 +6,7 @@ defmodule SimpleWeb.UserViewTest do
   alias Plug.Conn
 
   test "renders all attributes and relationships properly" do
-    user = insert(:user, first_name: "First", last_name: "Last", default_color: "blue")
+    user = build(:user, first_name: "First", last_name: "Last", default_color: "blue")
 
     host = Application.get_env(:simple, :asset_host)
 
@@ -38,7 +38,7 @@ defmodule SimpleWeb.UserViewTest do
   end
 
   test "renders email when user is the authenticated user" do
-    user = insert(:user)
+    user = build(:user)
 
     conn =
       ConnTest.build_conn()

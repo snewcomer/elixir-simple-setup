@@ -8,7 +8,7 @@ defmodule SimpleWeb.ViewCase do
 
   using do
     quote do
-      import Simple.Factories
+      import Simple.Factory
       import Phoenix.View, only: [render: 3]
     end
   end

@@ -6,9 +6,10 @@ defmodule SimpleWeb.ConversationViewTest do
   alias Simple.Repo
 
   test "renders all attributes and relationships properly" do
-    user = insert(:user, default_color: "blue")
-    conversation = insert(:conversation, user: user)
-    conversation_part = insert(:conversation_part, conversation: conversation, user: user)
+    conversation = build(:conversation_with_parts)
+    user = conversation.user
+    conversation_part = conversation.conversation_parts |> Enum.at(0)
+    part_user = conversation_part.user
 
     rendered_json =
       SimpleWeb.ConversationView
@@ -45,7 +46,7 @@ defmodule SimpleWeb.ConversationViewTest do
           },
           "user" => %{
             :data => %{
-              id: conversation.user_id,
+              id: conversation.user.id,
               type: "users"
             }
           }
@@ -72,19 +73,19 @@ defmodule SimpleWeb.ConversationViewTest do
         },
         %{
           attributes: %{
-            "cloudinary-public-id" => user.cloudinary_public_id,
-            "description" => user.description,
+            "cloudinary-public-id" => part_user.cloudinary_public_id,
+            "description" => part_user.description,
             "email" => "",
-            "first-name" => user.first_name,
-            "guest" => false,#user.guest,
-            "inserted-at" => user.inserted_at,
-            "last-name" => user.last_name,
+            "first-name" => part_user.first_name,
+            "guest" => part_user.guest,
+            "inserted-at" => part_user.inserted_at,
+            "last-name" => part_user.last_name,
             "photo-large-url" => "#{host}/icons/user_default_large_blue.png",
             "photo-thumb-url" => "#{host}/icons/user_default_thumb_blue.png",
-            "username" => user.username,
-            "updated-at" => user.updated_at
+            "username" => part_user.username,
+            "updated-at" => part_user.updated_at
           },
-          id: user.id,
+          id: part_user.id,
           type: "users",
           relationships: %{}
         },
@@ -100,7 +101,7 @@ defmodule SimpleWeb.ConversationViewTest do
           relationships: %{
             "user" => %{
               data: %{
-                id: user.id,
+                id: part_user.id,
                 type: "users"
               }
             }

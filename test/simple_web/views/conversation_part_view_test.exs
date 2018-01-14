@@ -3,9 +3,10 @@ defmodule SimpleWeb.ConversationPartViewTest do
 
   alias Plug.Conn
 
+  @tag :wip
   test "renders all attributes and relationships properly" do
-    user = insert(:user, default_color: "blue")
-    conversation_part = insert(:conversation_part, user: user)
+    user = build(:user, default_color: "blue")
+    conversation_part = build(:conversation_part, user: user)
 
     rendered_json =
       SimpleWeb.ConversationPartView
@@ -29,7 +30,7 @@ defmodule SimpleWeb.ConversationPartViewTest do
         relationships: %{
           "user" => %{
             :data => %{
-              id: conversation_part.user_id,
+              id: conversation_part.user.id,
               type: "users"
             }
           }
