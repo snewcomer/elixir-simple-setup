@@ -10,6 +10,7 @@ defmodule Simple.Accounts.User do
     field :admin, :boolean
     field :cloudinary_public_id
     field :default_color
+    field :description
     field :email, :string
     field :encrypted_password, :string
     field :first_name, :string
@@ -27,9 +28,11 @@ defmodule Simple.Accounts.User do
   def changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:cloudinary_public_id, :username, :password, :email, 
-      :first_name, :last_name, :guest])
+      :first_name, :last_name, :description, :guest])
     |> validate_required([:username, :email])
+    |> validate_format(:email, ~r/@/)
     |> validate_length(:username, min: 1, max: 39)
+    |> validate_length(:description, max: 500)
   end
 
   @doc false

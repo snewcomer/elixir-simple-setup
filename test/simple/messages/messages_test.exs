@@ -44,6 +44,7 @@ defmodule Simple.MessagesTest do
       assert conversation.body == "some body"
       assert conversation.is_locked == true
       assert conversation.read_at
+      assert conversation.notified == false
       assert conversation.receive_notifications == true
       assert conversation.status == "open"
       assert conversation.title == "some title"

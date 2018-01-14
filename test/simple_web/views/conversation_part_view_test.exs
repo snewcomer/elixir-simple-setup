@@ -38,6 +38,7 @@ defmodule SimpleWeb.ConversationPartViewTest do
       included: [%{
         attributes: %{
           "cloudinary-public-id" => user.cloudinary_public_id,
+          "description" => user.description,
           "email" => "",
           "first-name" => user.first_name,
           "guest" => user.guest,

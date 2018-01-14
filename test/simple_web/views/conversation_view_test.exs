@@ -26,6 +26,7 @@ defmodule SimpleWeb.ConversationViewTest do
         attributes: %{
           "body" => conversation.body,
           "is-locked" => conversation.is_locked,
+          "notified" => conversation.notified,
           "receive-notifications" => conversation.receive_notifications,
           "read-at" => conversation.read_at,
           "status" => conversation.status,
@@ -54,6 +55,7 @@ defmodule SimpleWeb.ConversationViewTest do
         %{
           attributes: %{
             "cloudinary-public-id" => user.cloudinary_public_id,
+            "description" => user.description,
             "email" => "",
             "first-name" => user.first_name,
             "guest" => user.guest,
@@ -71,6 +73,7 @@ defmodule SimpleWeb.ConversationViewTest do
         %{
           attributes: %{
             "cloudinary-public-id" => user.cloudinary_public_id,
+            "description" => user.description,
             "email" => "",
             "first-name" => user.first_name,
             "guest" => false,#user.guest,

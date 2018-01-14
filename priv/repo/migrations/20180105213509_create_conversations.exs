@@ -7,6 +7,7 @@ defmodule Simple.Repo.Migrations.CreateConversations do
       add :body, :string
       add :title, :string
       add :is_locked, :boolean, default: false, null: false
+      add :notified, :boolean, default: false, null: false
       add :receive_notifications, :boolean, default: false, null: false
       add :read_at, :utc_datetime, null: true
       add :status, :string, null: false, default: "open"

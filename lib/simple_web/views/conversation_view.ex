@@ -4,7 +4,7 @@ defmodule SimpleWeb.ConversationView do
   use JSONAPI.View, type: "conversations"
 
   def fields do
-    [:body, :title, :is_locked, :receive_notifications, :read_at, :status, :inserted_at, :updated_at]
+    [:body, :title, :is_locked, :notified, :receive_notifications, :read_at, :status, :inserted_at, :updated_at]
   end
 
   def relationships do

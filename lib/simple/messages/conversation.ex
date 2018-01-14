@@ -1,4 +1,11 @@
 defmodule Simple.Messages.Conversation do
+  @moduledoc """
+  The user may be a guest user or user registered with the system.
+  The user is the one who generated the conversation
+
+  The recipients are defined as thos who were "invited in" to the conversation.
+  """
+
   use Simple.Model
 
   alias Simple.Messages.{Conversation, ConversationPart}
@@ -8,6 +15,7 @@ defmodule Simple.Messages.Conversation do
     field :body, :string
     field :is_locked, :boolean, default: false
     field :read_at, :utc_datetime, null: true
+    field :notified, :boolean, default: false
     field :receive_notifications, :boolean, default: false
     field :status, :string, null: false, default: "open"
     field :title, :string
@@ -21,7 +29,7 @@ defmodule Simple.Messages.Conversation do
   @doc false
   def changeset(%Conversation{} = conversation, attrs) do
     conversation
-    |> cast(attrs, [:body, :title, :is_locked, :receive_notifications, :read_at, :user_id])
+    |> cast(attrs, [:body, :title, :is_locked, :notified, :receive_notifications, :read_at, :user_id])
     |> validate_required([:body, :title, :user_id])
     |> assoc_constraint(:user)
   end
