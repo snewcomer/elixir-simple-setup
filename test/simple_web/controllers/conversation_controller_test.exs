@@ -88,18 +88,23 @@ defmodule SimpleWeb.ConversationControllerTest do
 
   describe "create" do
     @tag :authenticated
+    @tag :wip
     test "renders user when data is valid", %{conn: conn, current_user: user} do
-      attrs = Map.put_new(@valid_attrs, :user_id, user.id)
+      attrs = @valid_attrs |> Map.put(:user, user) |> Map.put(:participants, [user])
       data = 
         conn
         |> request_create(attrs)
         |> json_response(201)
         |> Map.get("data")
-        |> Map.get("attributes")
 
-      assert data["body"] == "some body"
-      assert data["title"] == "some title"
-      assert data["status"] == "open"
+      attrs = data["attributes"]
+      assert attrs["body"] == "some body"
+      assert attrs["title"] == "some title"
+      assert attrs["status"] == "open"
+
+      relationships = data["relationships"]
+      assert relationships["user"]["data"]["id"] == user.id
+      assert relationships["participants"]["data"] |> Enum.at(0) |> Map.get("id") == user.id
     end
 
     test "renders 401 when unauthenticated", %{conn: conn} do
@@ -126,6 +131,21 @@ defmodule SimpleWeb.ConversationControllerTest do
           |> Map.get("data")
       
       assert data["attributes"]["status"] == "closed"
+    end
+
+    @tag authenticated: :admin
+    test "adds a participant", %{conn: conn, current_user: user} do
+      conversation = insert(:conversation, user: user)
+
+      data = 
+        conn 
+          |> request_update(conversation.id, %{participants: [user]}) 
+          |> json_response(200)
+          |> Map.get("data")
+      
+      relationships = data["relationships"]
+      assert relationships["user"]["data"]["id"] == user.id
+      assert relationships["participants"]["data"] |> Enum.at(0) |> Map.get("id") == user.id
     end
 
     @tag authenticated: :admin

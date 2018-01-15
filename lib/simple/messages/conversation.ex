@@ -8,9 +8,11 @@ defmodule Simple.Messages.Conversation do
   """
 
   use Simple.Model
+  import Ecto.Query
 
   alias Simple.Messages.{Conversation, ConversationPart}
   alias Simple.Accounts.{User}
+  alias Simple.Repo
 
   schema "conversations" do
     field :body, :string
@@ -29,13 +31,16 @@ defmodule Simple.Messages.Conversation do
     timestamps()
   end
 
-  @doc false
+  @doc """
+  adds a m2m via put_assoc
+  client sends list of participants as [%{id: .., type: ..}] and we convert to [id, id]
+  """
   def changeset(%Conversation{} = conversation, attrs) do
     conversation
     |> cast(attrs, [:body, :title, :is_locked, :notified, :receive_notifications, :read_at, :user_id])
     |> validate_required([:body, :title, :user_id])
+    |> put_participants(attrs)
     |> assoc_constraint(:user)
-    |> cast_assoc(:participants)
   end
 
   @doc false
@@ -49,4 +54,22 @@ defmodule Simple.Messages.Conversation do
   defp statuses do
     ~w{ open closed }
   end
+
+  defp put_participants(changeset, params) do
+    case params do
+      %{"participants_ids" => participants_ids} ->
+        participants =
+          get_existing_users(participants_ids) 
+          |> Enum.map(&Ecto.Changeset.change/1)
+
+        put_assoc(changeset, :participants, participants)
+      _ -> 
+        changeset
+    end
+  end
+
+  defp get_existing_users(ids) do
+    Repo.all(from c in User, where: c.id in ^ids)
+  end
+
 end
